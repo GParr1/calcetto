@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["src/*"],
+      "public": ["public/*"],
+      "components/*": ["src/components/*"],
+      "View/*": ["src/View/*"],
+      "state/*": ["src/state/*"],
+      "utils/*": ["src/utils/*"],
+      "properties/*": ["src/properties/*"],
+      "types": ["src/types/*"]
+    }
+  },
+  "extends": "expo/tsconfig.base"
+}

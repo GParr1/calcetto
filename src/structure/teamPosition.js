@@ -9,5 +9,5 @@ export const teamPosition = [
   { code: 'AD', label: 'Ala Destra' },
   { code: 'AS', label: 'Ala Sinistra' },
   { code: 'ATT', label: 'Attaccante Centrale' },
-  { code: 'SP', label: 'Seconda Punta' },
-];
+  { code: 'SP', label: 'Seconda Punta' }
+]

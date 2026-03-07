@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const PlayerCard = ({
   playerImage,
@@ -8,7 +8,7 @@ const PlayerCard = ({
   teamSymbol,
   countryCode,
   birthDate,
-  height,
+  height
 }) => {
   return (
     <div
@@ -24,12 +24,15 @@ const PlayerCard = ({
             ${playerColor.primaryColor}  270deg 360deg   /* arco rosso da 270° a 360° */
             ),
             radial-gradient(circle at center, ${playerColor.secondaryColor} 80%,  ${playerColor.primaryColor}  100%)`,
-        backgroundRepeat: 'no-repeat',
+        backgroundRepeat: 'no-repeat'
       }}
     >
       {/* HEADER */}
       <div className="card-header d-flex justify-content-between align-items-center text-white bg-panini">
-        <span className="fw-bold fs-4" dangerouslySetInnerHTML={{ __html: teamSymbol }}></span>
+        <span
+          className="fw-bold fs-4"
+          dangerouslySetInnerHTML={{ __html: teamSymbol }}
+        ></span>
         <span className="badge bg-dark fs-6">{countryCode}</span>
         <span className="fw-bold fs-4">{playerNumber}</span>
       </div>
@@ -65,7 +68,7 @@ const PlayerCard = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PlayerCard;
+export default PlayerCard

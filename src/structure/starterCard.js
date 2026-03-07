@@ -13,8 +13,8 @@ export const starterCard = [
       POS: 53,
       VIZ: 50,
       RIF: 48,
-      PAR: 20,
-    },
+      PAR: 20
+    }
   },
   {
     role: 'portiere',
@@ -30,7 +30,7 @@ export const starterCard = [
       POS: 58,
       VIZ: 50,
       RIF: 62,
-      PAR: 65,
-    },
-  },
-];
+      PAR: 65
+    }
+  }
+]

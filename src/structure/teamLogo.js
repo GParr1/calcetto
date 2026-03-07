@@ -5,5 +5,5 @@ export const teamLogo = [
   { label: 'Roma', code: '/app1/assets/teams/roma.png' },
   { label: 'Lazio', code: '/app1/assets/teams/lazio.png' },
   { label: 'Napoli', code: '/app1/assets/teams/napoli.png' },
-  { label: 'Fiorentina', code: '/app1/assets/teams/fiorentina.png' },
-];
+  { label: 'Fiorentina', code: '/app1/assets/teams/fiorentina.png' }
+]

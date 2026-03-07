@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { Timestamp } from 'firebase/firestore';
-import { saveMatch } from 'utils/firestoreUtils';
+import React, { useState } from 'react'
+import { Timestamp } from 'firebase/firestore'
+import { saveMatch } from 'utils/firestoreUtils'
 
 const MatchCreator = ({ onCreated }) => {
   const [form, setForm] = useState({
     campo: '',
     data: '',
-    tipo: '5',
-  });
+    tipo: '5'
+  })
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     const newMatch = {
       ...form,
       createdAt: new Date().toISOString(),
       // converto la stringa form.data in Timestamp
       dataTimestamp: Timestamp.fromDate(new Date(form.data)),
       players: [],
-      status: 'open',
-    };
-    const id = await saveMatch(newMatch);
-    onCreated?.(id);
-    setForm({ campo: '', data: '', tipo: '5' });
-  };
+      status: 'open'
+    }
+    const id = await saveMatch(newMatch)
+    onCreated?.(id)
+    setForm({ campo: '', data: '', tipo: '5' })
+  }
 
   return (
     <div className="card shadow-sm mb-4 p-3">
@@ -61,7 +61,12 @@ const MatchCreator = ({ onCreated }) => {
           <label htmlFor="tipo" className="form-label">
             Tipo
           </label>
-          <select name="tipo" value={form.tipo} onChange={handleChange} className="form-select">
+          <select
+            name="tipo"
+            value={form.tipo}
+            onChange={handleChange}
+            className="form-select"
+          >
             <option value="5">Calcio a 5</option>
             <option value="8">Calcio a 8</option>
           </select>
@@ -71,7 +76,7 @@ const MatchCreator = ({ onCreated }) => {
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default MatchCreator;
+export default MatchCreator
