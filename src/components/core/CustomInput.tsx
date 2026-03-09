@@ -44,7 +44,7 @@ const CI: React.FC<CIProps> = ({type,label,name,
   };
   if(type !== 'select') {
     return (
-      <View style={{ marginBottom: 16 }}>
+      <View style={{ gap:8, marginBottom: 16 }}>
         {label && <Text accessibilityLabel={label} style={{color:COLORS.primaryText}}>{label}</Text>}
         <TextInput
           style={styles.input}
@@ -62,7 +62,7 @@ const CI: React.FC<CIProps> = ({type,label,name,
     );
   }else {
     return (
-      <View style={{ marginBottom: 16 }}>
+      <View style={{ gap:8,  marginBottom: 16 }}>
         {label && <Text style={{color:COLORS.primaryText}}>{label}</Text>}
         <Picker
           selectedValue={value}

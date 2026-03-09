@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { BRONZE_CARD_BG, GOLD_CARD_BG, SILVER_CARD_BG } from 'utils/Constant'
 import {
   FORM_ADD_GUEST,
   FORM_CREATE_MATCH,
@@ -26,9 +25,6 @@ import {
   CalculateAttributesParams,
   Attributes
 } from 'src/types'
-import { store } from 'state/store'
-import { RootState } from 'state/store'
-import { getUser } from 'state/auth/selectors'
 import { Assets } from 'assets/assets';
 import { ImageSourcePropType } from 'react-native';
 

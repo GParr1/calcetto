@@ -7,7 +7,7 @@ import Button, { ButtonType } from 'components/core/Button';
 import { ContainerProps } from 'styles';
 import { validateForm } from 'components/Form/utils';
 import { useResponsiveStyle } from 'styles/styles.utils';
-import DateField from 'components/core/DateField';
+import DateField from 'components/core/DateFiled';
 
 /**
  * 🔹 GeneralForm

@@ -53,6 +53,9 @@ const RegisterStepEmailPassword: React.FC<RegisterStepEmailPasswordProps> = ({ h
       color:"#fff"
     },
   } as ButtonProps
+
+
+
   return(
     <>
       <Button {...btnBackConfig} />

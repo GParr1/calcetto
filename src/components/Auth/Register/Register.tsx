@@ -8,6 +8,7 @@ import { manageFirstLogin } from 'utils/utils';
 import { FormObject } from 'types/form'
 import RegisterStepUserInfo from 'components/Auth/Register/RegisterStepUserInfo';
 import RegisterStepEmailPassword from 'components/Auth/Register/RegisterStepEmailPassword';
+import Loader from 'components/core/Loader';
 
 interface RegisterTwoStepsProps {
   setError: (error: string) => void
@@ -18,6 +19,8 @@ const RegisterTwoSteps: React.FC<RegisterTwoStepsProps> = ({setError, setSuccess
   const navigate = useNavigate()
   const [step, setStep] = useState<number>(1)
   const [formObjectStep1, setFormObjectStep1] = useState<FormObject>({})
+  const [loading, setLoading] = useState<boolean>(false)
+
 
   const handleFirstStep = (obj:Record<string, any>) => {
     if (!obj.firstName || !obj.lastName) {
@@ -29,13 +32,23 @@ const RegisterTwoSteps: React.FC<RegisterTwoStepsProps> = ({setError, setSuccess
   }
 
   const handleRegister = async (obj: FormObject) => {
-    const { errorMessage, successMessage } =
-      await doCreateUserWithEmailAndPassword({account: { ...obj },customerInfo: { ...obj }})
-    if (errorMessage) setError(errorMessage)
-    if (successMessage) {
-      setSuccess('Registrazione completata con successo!')
-      setTimeout(() => navigate('/confirm-profile', { replace: true }), 2000)
+    setLoading(true)
+    try {
+      const { errorMessage, successMessage } =await doCreateUserWithEmailAndPassword({
+        account: { ...obj },
+        customerInfo: { ...obj }
+      })
+      if (errorMessage){
+        setError(errorMessage)
+      }
+      if (successMessage) {
+        setSuccess('Registrazione completata con successo!')
+        setTimeout(() => navigate('/confirm-profile', { replace: true }), 2000)
+      }
+    }finally {
+      setLoading(false)
     }
+
   }
 
   const handleLogin = async (obj: Record<string, any>) => {
@@ -54,17 +67,21 @@ const RegisterTwoSteps: React.FC<RegisterTwoStepsProps> = ({setError, setSuccess
     handleFirstStep, handleLogin
   }
   const registerStepEmailPasswordProps = {
-    handleBack, handleRegister, formObjectStep1
+    handleBack,
+    handleRegister,
+    formObjectStep1
   }
 
   return (
     <>
+      <Loader visible={loading}/>
       {step === 1 && (
         <RegisterStepUserInfo {...registerStepUserInfoProps} />
       )}
       {step === 2 && (
         <RegisterStepEmailPassword {...registerStepEmailPasswordProps}/>
       )}
+
     </>
   );
 }
