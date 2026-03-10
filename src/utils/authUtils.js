@@ -46,22 +46,17 @@ export const fetchDocProfile = async (userUid) => {
     return {}
   }
 }
-export const authUpdateProfile = async (userObj) => {
+export const authUpdateProfile = async (customerInfoUpdate) => {
   try {
-    const { userLogin, customerInfo } = userObj
-    const user = auth.currentUser
-    !userLogin.displayName &&
-      (await updateProfile(user, {
-        displayName: `${customerInfo.firstName} ${customerInfo.lastName}`
-      }))
+    const currentUser = auth.currentUser
     await setDoc(
-      doc(db, 'users', userLogin.uid),
+      doc(db, 'users', currentUser.uid),
       {
-        ...customerInfo
+        ...customerInfoUpdate
       },
       { merge: true }
     ) // merge evita di sovrascrivere completamente il documento
-    await fetchUserData({ currentUser: userLogin })
+    await fetchUserData({ currentUser })
     return { successMessage: true }
   } catch (err) {
     console.error('authUpdateProfile:', err)
@@ -83,11 +78,11 @@ export const doSignOut = async () => {
     // // window.calcetto.toggleSpinner(false)
   }
 }
-export const handleSaveFormUser = async (evt, user) => {
+export const handleSaveFormUser = async (obj, customerInfo) => {
   // // window.calcetto.toggleSpinner(true)
   try {
-    evt.preventDefault()
-    const formObject = getObjFormFromEvt(evt)
+
+    const formObject = obj
     const isNewUser = formObject.isNewUser === 'true'
     const position = formObject.position || ''
 
@@ -99,17 +94,15 @@ export const handleSaveFormUser = async (evt, user) => {
     const overall = calculatePlayerOverall(starterCard[0].attributes)
     // Stampa l'oggetto JSON
     console.log(JSON.stringify(formObject, null, 2))
-    const userObj = {
-      userLogin: { ...user.userLogin },
-      customerInfo: {
-        ...user.customerInfo,
-        ...formObject,
-        ...(!isNewUser && { attributes }),
-        overall
-      }
+    const customerInfoUpdate = {
+      ...customerInfo,
+      ...formObject,
+      ...(!isNewUser && { attributes }),
+      overall
+
     }
-    console.log('Dati inseriti:', userObj)
-    const { errorMessage, successMessage } = await authUpdateProfile(userObj)
+    console.log('Dati inseriti:', customerInfoUpdate)
+    const { errorMessage, successMessage } = await authUpdateProfile(customerInfoUpdate)
     return { errorMessage, successMessage }
   } catch (e) {
     return { errorMessage: e }

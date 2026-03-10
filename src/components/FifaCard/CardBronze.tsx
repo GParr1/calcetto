@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { View, Text, Image, ImageSourcePropType, ImageBackground } from 'react-native';
+import { View, Text, Image, ImageSourcePropType, ImageBackground, Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 import { getCustomerIndo } from 'state/auth/selectors';
 import { getCardTier } from 'utils/utils';
@@ -9,9 +9,13 @@ import { Assets, Teams } from 'assets/assets';
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { ImageBackgroundProps, ImageProps } from 'react-native/Libraries/Image/Image';
 import StatsComponent from 'components/FifaCard/StatsComponent';
+import { Ionicons } from '@expo/vector-icons';
 
+interface EditFunction {
+  editImage?: () => void
+}
 interface CardBronzeProps {
-  enableEdit?: boolean;
+  enableEdit?: EditFunction;
   dynamicValue?: CustomerInfo;
   previewImg?: string;
   scale: number
@@ -19,7 +23,7 @@ interface CardBronzeProps {
 }
 
 const CardBronze: FC<CardBronzeProps> = ({
-                                                 enableEdit = false,
+                                                 enableEdit = {},
                                                  dynamicValue,
                                                  previewImg,
                                                  scale = 1,
@@ -29,7 +33,7 @@ const CardBronze: FC<CardBronzeProps> = ({
 
   const stateCustomerInfo = useSelector(getCustomerIndo) || {};
   const customerInfo = dynamicValue || stateCustomerInfo;
-
+  const {editImage} = enableEdit
 
   const playerImage: string = previewImg ?? customerInfo.photoURL
 
@@ -162,7 +166,25 @@ const CardBronze: FC<CardBronzeProps> = ({
   return (
     <ImageBackground {...imageBGConfig}>
       {/* Foto giocatore */}
+      {editImage &&
+        <Pressable style={{
+          position: 'absolute',
+          top: '14%',
+          right: '10%',
+          width: '55%',
+          height: '52%',
+          borderWidth: 1,
+          borderColor: 'rgb(0 0 0)',
+          zIndex:2
+        }}
+          onPress={editImage}
+        >
+          <Ionicons name="camera" size={30} color="black" />
+        </Pressable>
+      }
+
       <Image {...imagePlayerConfig}/>
+
       {/* Nazione */}
       <Image {...imageNationConfig}/>
       {/* Club */}

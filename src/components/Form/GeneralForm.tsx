@@ -16,13 +16,14 @@ import DateField from 'components/core/DateFiled';
  */
 const GeneralForm: React.FC<GeneralFormProps> = ({
                                                    handleSubmit,
+                                                   handleChangeInput,
                                                    formId,
                                                    obj = {},
                                                    labels
                                                  }) => {
   const { getResponsiveStyle } = useResponsiveStyle();
   const formData: FormStructure = getFormStructure(formId);
-  // Stato dinamico per ogni campo del form
+
   const [formValues, setFormValues] = useState(
     formData.fields.reduce((acc: any, field: FieldsFormStructure) => {
       if (field.type === 'date-split') {
@@ -30,7 +31,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
         acc[`${field.name}_month`] = field.defaultValue ? field.defaultValue.split('-')[1] : '';
         acc[`${field.name}_year`] = field.defaultValue ? field.defaultValue.split('-')[0] : '';
       } else {
-        acc[field.name] = field.defaultValue || ''; // Inizializza con i valori predefiniti o stringa vuota
+        acc[field.name] = obj[field.name] ?? field.defaultValue ?? '';
       }
       return acc;
     }, {})
@@ -51,9 +52,10 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
       ...prevValues,
       [name]: value,
     }));
+    handleChangeInput?.({ [name]: value, })
   };
   const viewFormConfig =getResponsiveStyle({
-    width: ['80%','80%','70%']
+    width: ['80%','80%','80%']
   })
   return (
     <View role={'form'} id={formId} style={{...viewFormConfig}}>
@@ -86,7 +88,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               options,
               defaultValue,
               pattern,
-              value:formValues[name],
+              value: formValues[name],
               onChangeText:(value: string) => handleChange(name, value)
             }
             const viewConfig = {

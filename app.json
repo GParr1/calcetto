@@ -1,5 +1,7 @@
 {
-  "android": {
-    "package": "com.anonymous.calcetto"
+  "expo": {
+    "plugins": [
+      "expo-camera"
+    ]
   }
 }

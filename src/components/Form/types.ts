@@ -14,7 +14,7 @@ export type FormId =
 
 export interface GeneralFormProps {
   handleSubmit?: (obj: Record<string, any>) => void
-  handleSubmitEvt?: (ev: FormEvent<HTMLFormElement>) => Promise<void>
+  handleChangeInput?: (obj: Record<string, any>) => void
   formId: FormId
   obj?: Record<string, any>
   labels?: {

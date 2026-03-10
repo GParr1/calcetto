@@ -36,6 +36,7 @@ export interface UploadImageParams {
 /** Risultato upload immagine */
 export interface UploadImageResult {
   successMessage?: string
+  result?: string
   errorMessage?: string
 }
 

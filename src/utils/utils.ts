@@ -401,16 +401,11 @@ export const uploadImage = async ({
     }
 
     const data: { secure_url: string } = await response.json()
-    const updatedUser = {
-      ...user,
-      userLogin,
-      customerInfo: { ...customerInfo, photoURL: data.secure_url }
-    }
+    console.log('secure_url', data.secure_url ?? 'undefined')
 
-    const { errorMessage } = await authUpdateProfile(updatedUser)
-    if (errorMessage) return { errorMessage }
+    return {result: data.secure_url ?? '' }
 
-    return { successMessage: 'Profilo aggiornato con successo!' }
+
   } catch (error) {
     console.error('Errore nell\'upload dell\'immagine:', error)
     return { errorMessage: 'Upload fallito' }

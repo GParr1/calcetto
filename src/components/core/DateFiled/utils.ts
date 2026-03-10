@@ -19,8 +19,9 @@ export const daysInMonth =(
 
 /** Parsing robusto: accetta sia 'YYYY-MM-DD' che ISO completo con 'T' */
 export const parseIncoming = (value?: string): { y: number | null; m: number | null; d: number | null } => {
-  if (!value) return { y: null, m: null, d: null };
-
+  if (!value){
+    return { y: 0, m: 0, d: 0 };
+  }
   // caso 'YYYY-MM-DD'
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     const [yy, mm, dd] = value.split('-').map((v) => parseInt(v, 10));
@@ -33,5 +34,5 @@ export const parseIncoming = (value?: string): { y: number | null; m: number | n
     return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate() };
   }
 
-  return { y: null, m: null, d: null };
+  return { y: 0, m: 0, d: 0 };
 }

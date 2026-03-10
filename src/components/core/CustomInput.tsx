@@ -12,21 +12,23 @@ interface CIProps {
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
   required?: boolean;
-  options?:Array<any>;
+  options?:Array<{ label: string, value: string }>;
   defaultValue?:string;
   pattern?: RegExp;
 }
 
-const CI: React.FC<CIProps> = ({type,label,name,
-                                                   placeholder,
-                                                   value,
-                                                   onChangeText,
+const CI: React.FC<CIProps> = ({type,
+                                label,
+                                 name,
+                                 placeholder,
+                                 value,
+                                 onChangeText,
                                  defaultValue ='',
-  options =[],
-                                                   secureTextEntry = false,
-                                                   required = false,
-                                                   pattern = /.*/,
-                                                 }) => {
+                                 options =[],
+                                 secureTextEntry = false,
+                                 required = false,
+                                 pattern = /.*/,
+                               }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Funzione per validare il campo

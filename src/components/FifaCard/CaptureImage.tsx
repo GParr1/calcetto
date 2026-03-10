@@ -5,7 +5,7 @@ import { SVGCloseCircleFilled } from 'components/SVG/SVGClose'
 import { SVGRefreshCircleFilled } from 'components/SVG'
 import { useSelector } from 'react-redux'
 import { getUser } from 'state/auth/selectors'
-import { User } from 'src/types'
+import { User } from 'types/user'
 
 interface CaptureImageProps {
   enableEdit?: boolean
@@ -39,11 +39,7 @@ const CaptureImage: React.FC<CaptureImageProps> = ({ enableEdit = true, playerIm
         }
       } catch (err) {
         console.error('Errore accesso webcam:', err)
-        window.calcetto.showModalMessage(
-          'Non è stato possibile accedere alla webcam.',
-          'error',
-          'Attenzione!'
-        )
+
         setCameraActive(false)
       } finally {
         setLoading(false)
@@ -82,7 +78,6 @@ const CaptureImage: React.FC<CaptureImageProps> = ({ enableEdit = true, playerIm
       )
 
       if (!blob) {
-        window.calcetto.showModalMessage('Errore nella cattura foto', 'error', 'Errore!')
         return
       }
 
@@ -97,7 +92,6 @@ const CaptureImage: React.FC<CaptureImageProps> = ({ enableEdit = true, playerIm
       setCameraActive(false)
     } catch (error) {
       console.error('Errore nella cattura foto:', error)
-      window.calcetto.showModalMessage('Errore nella cattura foto', 'error', 'Errore!')
     } finally {
       setLoading(false)
     }
@@ -106,25 +100,23 @@ const CaptureImage: React.FC<CaptureImageProps> = ({ enableEdit = true, playerIm
   // ☁️ Upload su Cloudinary
   const handleUpload = async () => {
     if (!file) {
-      return window.calcetto.showModalMessage('Nessuna immagine da caricare', 'error', 'Errore!')
+      return
     }
     if (!user) {
-      return window.calcetto.showModalMessage('Utente non autenticato', 'error', 'Errore!')
+      return
     }
 
     setLoading(true)
     try {
       const { errorMessage, successMessage } = await uploadImage({ user, file, isDragAndDrop: true })
       if (errorMessage) {
-        return window.calcetto.showModalMessage(errorMessage, 'error', 'Errore!')
+        return
       }
 
-      window.calcetto.showModalMessage(successMessage, 'success', 'OK')
       setFile(null)
       setCameraActive(false)
     } catch (err) {
       console.error('Errore upload:', err)
-      window.calcetto.showModalMessage('Upload fallito', 'error', 'Errore!')
     } finally {
       setLoading(false)
     }

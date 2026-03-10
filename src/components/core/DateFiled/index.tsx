@@ -68,7 +68,7 @@ const DateField: React.FC<DateFieldProps> = ({
   useEffect(() => {
     if (year > 0 && month > 0 && day > 0) {
       const isoDateOnly = `${year}-${pad2(month)}-${pad2(day)}`; // ISO senza tempo
-      onChange(isoDateOnly);
+      //onChange(isoDateOnly);
     }
     // Se manca qualcosa, non emetto nulla: il genitore mantiene l'ultimo valore valido
     // oppure puoi scegliere di emettere ''/null
@@ -91,6 +91,7 @@ const DateField: React.FC<DateFieldProps> = ({
               selectedValue={day}
               onValueChange={(v) => setDay(v)}
               dropdownIconColor={COLORS.primaryText}
+              style={{borderColor:COLORS.primaryColor, borderRadius: 999, backgroundColor:'trasparent'}}
             >
               <Picker.Item label="—" value={0} />
               {days.map((d) => (
@@ -108,6 +109,8 @@ const DateField: React.FC<DateFieldProps> = ({
               selectedValue={month}
               onValueChange={(v) => setMonth(v)}
               dropdownIconColor={COLORS.primaryText}
+              style={{borderColor:COLORS.primaryColor}}
+
             >
               <Picker.Item label="—" value={0} />
               {months.map((m) => (
@@ -125,6 +128,7 @@ const DateField: React.FC<DateFieldProps> = ({
               selectedValue={year}
               onValueChange={(v) => setYear(v)}
               dropdownIconColor={COLORS.primaryText}
+              style={{borderColor:COLORS.primaryColor}}
             >
               <Picker.Item label="—" value={0} />
               {years.map((y) => (
@@ -153,13 +157,10 @@ const styles = StyleSheet.create({
   },
   smallLabel: {
     fontSize: 12,
-    color: '#555',
+    color: COLORS.primaryText,
     marginBottom: 4,
   },
   pickerWrapper: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
     overflow: 'hidden',
     // Padding visuale "simile" al tuo input originale
     // NB: Picker gestisce internamente l'area tappabile
