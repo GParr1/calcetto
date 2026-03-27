@@ -5,6 +5,7 @@ import { emailRegex, phoneRegex } from 'utils/regex'
 import { manageFirstLogin } from 'utils/utils'
 import LoginStepEmail from 'components/Auth/Login/LoginStepEmail';
 import LoginStepPassword from 'components/Auth/Login/LoginStepPassword';
+import { LoginLabelsProps } from 'properties/authView'
 
 interface LoginProps {
   setError: (error: string) => void
@@ -17,14 +18,15 @@ const Login: React.FC<LoginProps> = ({setError,setSuccess}) => {
   const navigate = useNavigate()
   const [step, setStep] = useState<number>(1)
   const [email, setEmail] = useState<string>('')
+  const { errors } = LoginLabelsProps
   const handleSetEmail = (obj:Record<string, any>) => {
     const emailOrPhone = obj.email?.trim()
     if (!emailOrPhone) {
-      setError("Inserisci un numero di telefono o un'email.")
+      setError(errors.emailOrPhone)
       return
     }
     if (!emailRegex.test(emailOrPhone) && !phoneRegex.test(emailOrPhone)) {
-      setError("Formato non valido. Inserisci un'email o un numero corretto.")
+      setError(errors.invalidRegex)
       return
     }
     setError('')
@@ -35,7 +37,8 @@ const Login: React.FC<LoginProps> = ({setError,setSuccess}) => {
     try {
       const { errorMessage, successMessage } = await doFirebaseLogin({
         action: obj.action,
-        options: { email: obj.email, password: obj.password }
+        email: obj.email,
+        password: obj.password
       })
 
       if (errorMessage) {
@@ -44,8 +47,8 @@ const Login: React.FC<LoginProps> = ({setError,setSuccess}) => {
         navigate(manageFirstLogin(), { replace: true })
       }
     } catch (err) {
-      console.error('Errore durante il login:', err)
-      setError('Errore imprevisto durante il login.')
+      console.error(err)
+      setError(errors.generic)
     }
   }
 

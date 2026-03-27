@@ -1,5 +1,7 @@
+import { GoalkeeperAttributes, PlayerAttributes } from 'types/player'
+
 export interface UserLogin {
-  uid?: string
+  uid: string
   email?: string
   displayName?: string
   photoURL?: string
@@ -11,9 +13,12 @@ export interface CustomerInfo {
   favoriteTeam?: string
   overall?: number
   position?: string
-  attributes?: Record<string, number>
+  attributes?: PlayerAttributes | GoalkeeperAttributes
   photoURL?: string
   isAdmin?: boolean
+  isNewUser?: boolean
+  height?: string
+  birthDate?: string
 }
 
 export interface User {

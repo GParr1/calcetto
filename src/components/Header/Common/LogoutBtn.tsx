@@ -1,5 +1,5 @@
 import React from 'react'
-import { doSignOut } from '../../../utils/authUtils'
+import { doSignOut } from 'utils/authUtils'
 
 const LogoutBtn: React.FC = () => (
   <button

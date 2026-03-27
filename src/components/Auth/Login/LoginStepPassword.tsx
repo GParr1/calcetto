@@ -11,6 +11,8 @@ import GeneralForm from 'components/Form/GeneralForm';
 import Link from 'components/core/Link';
 import { maskEmail } from 'utils/utils';
 import { COLORS } from 'components/constantStyle';
+import Login from 'components/Auth/Login/Login'
+import { LoginLabelsProps } from 'properties/authView'
 
 interface LoginStepPasswordProps {
   handleBack: () =>  void
@@ -18,12 +20,12 @@ interface LoginStepPasswordProps {
   handleLogin: (obj: Record<string, any>) =>  Promise<void>
 }
 
-const LoginStepPassword: React.FC<LoginStepPasswordProps> = ({ handleBack, email,handleLogin }) => {
+const LoginStepPassword: React.FC<LoginStepPasswordProps> = ({ handleBack, email, handleLogin }) => {
   const navigate = useNavigate()
   const { getResponsiveStyle } = useResponsiveStyle();
-
+  const {labels} = LoginLabelsProps
   const headerAuthViewProps = {
-    message: 'Inserisci la password'
+    message: labels.insertPass
   }
   const responsiveFormContainer = getResponsiveStyle({
     alignItems: ['center'],
@@ -44,9 +46,9 @@ const LoginStepPassword: React.FC<LoginStepPasswordProps> = ({ handleBack, email
         borderWidth:1,
         zIndex:1
       },
-      accessibilityLabel: "Torna indietro",
+      accessibilityLabel: labels.backButtonAccessibilityLabel,
     },
-    label: 'Indietro',
+    label: labels.backButton,
     ioniconsConfig: {
       name: 'chevron-back' as IoniconsNames,
       size:20,

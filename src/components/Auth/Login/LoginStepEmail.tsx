@@ -9,17 +9,19 @@ import DividerLogin from 'components/Auth/Common/DividerLogin';
 import { View } from 'react-native';
 import GeneralForm from 'components/Form/GeneralForm';
 import Link, { LinkProps } from 'components/core/Link';
+import { LoginLabelsProps } from 'properties/authView'
+import { DoFirebaseLoginParms } from 'utils/authUtils'
 
 interface LoginStepEmailProps {
-  handleLogin: (obj: Record<string, any>) =>  Promise<void>
-  handleSetEmail: (obj: Record<string, any>) =>  void
+  handleLogin: (obj: DoFirebaseLoginParms) => Promise<void>
+  handleSetEmail: (obj: Record<string, any>) => void
 }
 const LoginStepEmail: React.FC<LoginStepEmailProps> = ({ handleLogin, handleSetEmail }) => {
   const navigate = useNavigate()
   const { getResponsiveStyle } = useResponsiveStyle();
-
+  const { labels } = LoginLabelsProps
   const headerAuthViewProps = {
-    message: 'Accedi al tuo account'
+    message: labels.welcome
   }
   const responsiveFormContainer = getResponsiveStyle({
     alignItems: ['center'],
@@ -35,18 +37,18 @@ const LoginStepEmail: React.FC<LoginStepEmailProps> = ({ handleLogin, handleSetE
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
       onPress: () => navigate('/create-account', { replace: true }),
-      accessibilityLabel: "Crea Account",
-      style:{
+      accessibilityLabel: labels.btnCreateAccount,
+      style: {
         ...btnSecondaryDefault
       }
     },
-    label:'Crea Account',
+    label: labels.btnCreateAccount
   } as ButtonProps
 
   const linkConfig = {
     to:'/reset-password',
     toApp:"ResetPassword",
-    label:'Hai dimenticato la password o devi crearne una nuova?',
+    label: labels.resetPass,
   } as LinkProps
   return (
     <>

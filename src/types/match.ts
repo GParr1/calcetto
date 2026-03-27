@@ -1,12 +1,20 @@
 import { Player } from './player'
-export interface Match {
+export interface Match extends MatchInfo {
   id: string
+}
+export interface MatchInfo {
   status: string
   campo: string
   data: string
   tipo: string
-  players: any[] // puoi poi sostituirlo con Player[] se hai un tipo
+  players: Player[]
   teamBalance: TeamBalance
+  result: MatchResult
+}
+
+export interface MatchResult {
+  goalsA: number
+  goalsB: number
 }
 
 /** Squadre bilanciate */

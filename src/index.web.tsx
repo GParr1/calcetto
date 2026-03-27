@@ -46,14 +46,6 @@ const LoadingScreen: React.FC = () => {
   );
 };
 
-// const RootApp = (
-//   <Provider store={store}>
-//     <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-//       <App />
-//     </PersistGate>
-//   </Provider>
-// )
-
 
 const container = document.getElementById('root');
 

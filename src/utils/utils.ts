@@ -23,7 +23,8 @@ import {
   UploadImageParams,
   UploadImageResult,
   CalculateAttributesParams,
-  Attributes
+  Attributes,
+  User
 } from 'src/types'
 import { Assets } from 'assets/assets';
 import { ImageSourcePropType } from 'react-native';
@@ -198,7 +199,7 @@ export const analyzeMatch = (teamA: Player[], teamB: Player[]): MatchAnalysis | 
 /**
  * Trova un giocatore per uid
  */
-export const findInArrByUid = (arr: Player[], uid: string): Player | undefined =>
+export const findInArrByUid = (arr: Player[] | Math[], uid: string): Player | Math | undefined =>
   arr.find(p => p.id === uid)
 
 /**
@@ -430,8 +431,34 @@ export function calculateAttributes({
   const isGoalkeeper = position === 'POR'
 
   const base: Attributes = isGoalkeeper
-    ? { VEL: 30, TIR: 20, PAS: 40, DRI: 35, DIF: 40, FIS: 60, RES: 55, TEC: 45, POS: 65, VIZ: 60, RIF: 70, PAR: 75 }
-    : { VEL: 60, TIR: 55, PAS: 55, DRI: 60, DIF: 50, FIS: 55, RES: 60, TEC: 55, POS: 55, VIZ: 55, RIF: 50, PAR: 25 }
+    ? {
+        VEL: 30,
+        TIR: 20,
+        PAS: 40,
+        DRI: 35,
+        DIF: 40,
+        FIS: 60,
+        RES: 55,
+        TEC: 45,
+        POS: 65,
+        VIZ: 60,
+        RIF: 70,
+        PAR: 75
+      }
+    : {
+        VEL: 60,
+        TIR: 55,
+        PAS: 55,
+        DRI: 60,
+        DIF: 50,
+        FIS: 55,
+        RES: 60,
+        TEC: 55,
+        POS: 55,
+        VIZ: 55,
+        RIF: 50,
+        PAR: 25
+      }
 
   const ageFactor = age < 20 ? 1.1 : age > 35 ? 0.9 : 1
   const physFactor = 1 + (heightFactor - 0.5) * 0.2

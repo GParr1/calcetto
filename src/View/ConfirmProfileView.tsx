@@ -78,7 +78,7 @@ export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) 
         file,
         isDragAndDrop: false
       })
-      const updateDynamicValue = {...dynamicValue,photoURL:result}
+      const updateDynamicValue = {...dynamicValue, photoURL:result}
 
       const { errorMessage, successMessage } = await handleSaveFormUser(updateDynamicValue, customerInfo)
       if (successMessage) {
