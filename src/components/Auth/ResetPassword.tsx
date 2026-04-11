@@ -1,18 +1,20 @@
-import React, { FormEvent, useEffect, useState } from 'react';
-import {
-  doConfirmPasswordReset,
-  doResetPassword,
-  doVerifyPasswordResetCode
-} from 'utils/authUtils'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import HeaderAuthView from 'components/Auth/Common/HeaderAuthView'
+import React, { useEffect, useState } from 'react'
+import { doConfirmPasswordReset, doResetPassword, doVerifyPasswordResetCode } from 'utils/authUtils'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import GeneralForm from 'components/Form/GeneralForm'
-import { cleanUrlParamiter, getObjFormFromEvt } from 'utils/utils'
+import { cleanUrlParamiter } from 'utils/utils'
 import ModalError from 'components/Modal/ModalInfo'
-import { FormObject } from 'types/form'
-import { Text, View } from 'react-native';
-import { sizesPx, textDefault } from 'styles';
-import { COLORS } from 'components/constantStyle';
+import { View } from 'react-native'
+import { sizesPx } from 'styles'
+import { COLORS } from 'components/constantStyle'
+import { Container } from 'components/core/Container/Container'
+import ModalInfo from 'components/Modal/ModalInfo'
+import {
+  FlexAlignItems,
+  SizesPx,
+  SizesRem,
+  SizeUnits
+} from 'components/core/Container/enum'
 
 const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams()
@@ -26,7 +28,7 @@ const ResetPassword: React.FC = () => {
     const code = searchParams.get('oobCode')
     if (!code) return
 
-    doVerifyPasswordResetCode({ code }).then((result) => {
+    doVerifyPasswordResetCode( code ).then((result) => {
       const { errorMessage, successMessage } = result
       cleanUrlParamiter()
       if (errorMessage) setError(errorMessage)
@@ -34,88 +36,62 @@ const ResetPassword: React.FC = () => {
     })
   }, [searchParams])
 
-  const handleResetPassword = async (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-    const credential: FormObject = getObjFormFromEvt(evt)
-    if (!credential.email) {
+  const handleResetPassword = async (obj:Record<string, any>) => {
+    const {email} = obj
+    if (!email) {
       setError("Email vuota! Inserisci l'email")
       return
     }
-    const { errorMessage, successMessage } = await doResetPassword({
-      email: credential.email
-    })
+    const { errorMessage, successMessage } = await doResetPassword(email)
     if (errorMessage) setError(errorMessage)
     if (successMessage) setSuccess(successMessage)
   }
 
-  const handleConfirmPasswordReset = async (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-    const credential: FormObject = getObjFormFromEvt(evt)
-    const { errorMessage, successMessage } = await doConfirmPasswordReset({
+  const handleConfirmPasswordReset = async (obj: Record<string, any>) => {
+    const { password } = obj
+    const { errorMessage, successMessage } = await doConfirmPasswordReset(
       oobCode,
-      newPassword: credential.password
-    })
+      password
+    )
     if (errorMessage) setError(errorMessage)
     if (successMessage) setSuccess(successMessage)
     setTimeout(() => navigate('/login'), 2000)
   }
-  const headerAuthViewProps = {
-    message: 'Recupero della password'
-  }
-  const textConfig= {
-    children: "Inserisci l'indirizzo e-mail, l'ID o il numero di telefono dell'account\n" +
-      "per cui vuoi modificare o impostare una password.",
-    style: {
-      ...textDefault,
-      marginLeft: 5,
-    }
-  }
+
   const container = {
-    style: {
-      backgroundColor: COLORS.secondaryBg,
-      padding: sizesPx.XL
-    }
+    flexAlignItems: FlexAlignItems.CENTER,
+    gap: SizesRem.L,
+    width: SizeUnits.FULL,
+    backgroundColor: COLORS.secondaryBg,
+    padding: SizesPx.L
   }
+  const modalProps = {
+    title: error ? 'Errore' : 'Password Reset',
+    type: error ? 'error' : 'success',
+    message: error ? error : success,
+    closeModal: () => (error ? setError('') : setSuccess(''))
+  }
+
   return (
-    <>
-      <HeaderAuthView {...headerAuthViewProps}/>
-      <Text {...textConfig}/>
-      <View {...container}>
-        {!oobCode && (
-          <GeneralForm
-            formId="resetPassword"
-            handleSubmitEvt={handleResetPassword}
-            obj={{}}
-          />
-        )}
+    <Container {...container}>
+      {!oobCode && (
+        <GeneralForm
+          formId="resetPassword"
+          handleSubmit={handleResetPassword}
+          obj={{}}
+        />
+      )}
 
-        {oobCode && (
-          <GeneralForm
-            formId="resetPassword-step-password"
-            handleSubmitEvt={handleConfirmPasswordReset}
-            obj={{}}
-          />
-        )}
-
-        {error && (
-          <ModalError
-            title="Errore"
-            type="error"
-            message={error}
-            closeModal={() => setError('')}
-          />
-        )}
-
-        {success && (
-          <ModalError
-            title="Password Reset"
-            type="success"
-            message={success}
-            closeModal={() => setSuccess('')}
-          />
-        )}
-      </View>
-    </>
+      {oobCode && (
+        <GeneralForm
+          formId="resetPassword-step-password"
+          handleSubmit={handleConfirmPasswordReset}
+          obj={{}}
+        />
+      )}
+      {(error || success) &&
+        <ModalInfo {...modalProps} />}
+    </Container>
   )
 }
 

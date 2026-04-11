@@ -5,6 +5,13 @@ import { ContainerProps, sizesPx, TextAlign } from 'styles';
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { ImageProps } from 'react-native/Libraries/Image/Image';
 import NativeText from 'components/core/NativeText';
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexJustifyContent,
+  SizesRem,
+  SizeUnits
+} from 'components/core/Container/enum'
 
 
 interface HeaderAuthViewProps {
@@ -14,12 +21,12 @@ interface HeaderAuthViewProps {
 const HeaderAuthView: React.FC<HeaderAuthViewProps> = ({ message }) => {
   const { getResponsiveStyle } = useResponsiveStyle();
 
-  const viewConfig = getResponsiveStyle({
-    width: ['100%'],
-    justifyContent:[ ContainerProps.justifyCenter],
-    alignItems: ['center'],
-    gap: ['1rem']
-  })
+  const viewConfig = {
+    width: SizeUnits.FULL,
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER,
+    gap: SizesRem.L
+  }
   const textConfig = getResponsiveStyle({
     textAlign: [TextAlign.CENTER],
   })
@@ -30,10 +37,10 @@ const HeaderAuthView: React.FC<HeaderAuthViewProps> = ({ message }) => {
     accessibilityIgnoresInvertColors: true
   } as ImageProps
   return (
-    <View style={{...viewConfig}}>
+    <Container {...viewConfig}>
       <Image {...imageProps}/>
       <NativeText as={'h1'} {...textConfig} >{message}</NativeText>
-    </View>
+    </Container>
 )}
 
 export default HeaderAuthView

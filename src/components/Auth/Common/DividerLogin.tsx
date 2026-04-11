@@ -1,34 +1,42 @@
 import React from 'react'
-import { View } from 'react-native';
 import { useResponsiveStyle } from 'styles/styles.utils';
-import { ContainerProps } from 'styles';
 import { COLORS } from 'components/constantStyle';
 import NativeText from 'components/core/NativeText';
+import { Container } from 'components/core/Container/Container'
+import {
+  BorderStyle,
+  FlexAlignItems,
+  FlexDirection,
+  FlexJustifyContent, SizesPx,
+  SizesRem,
+  SizeUnits
+} from 'components/core/Container/enum'
 
 const DividerLogin: React.FC = () => {
-  const { getResponsiveStyle } = useResponsiveStyle();
 
-  const viewConfig = getResponsiveStyle({
-    width: ['100%'],
-    flexDirection: [ContainerProps.flexRow],
-    justifyContent:[ ContainerProps.justifyCenter],
-    alignItems: ['center'],
-    gap: ['1rem'],
-  })
-  const viewLineConfig = getResponsiveStyle({
-    flex: [1],
-    height: [1],
-    borderTop: [`${COLORS.secondaryColor} solid`]
-  })
-  const textConfig = getResponsiveStyle({
-    color: [COLORS.primaryText]
-  })
-  return(
-    <View style={{...viewConfig}}>
-      <View style={{...viewLineConfig}} />
+  const viewConfig = {
+    width: SizeUnits.FULL,
+    flexDirection: FlexDirection.ROW,
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER,
+    gap: SizesRem.L
+  }
+  const viewLineConfig = {
+    flex: 1,
+    border: BorderStyle.SOLID,
+    borderSize: 1,
+    borderColor: COLORS.secondaryColor
+  }
+  const textConfig = {
+    margin: SizesPx.M,
+    color: COLORS.primaryText
+  }
+  return (
+    <Container {...viewConfig}>
+      <Container {...viewLineConfig} />
       <NativeText style={textConfig}>o</NativeText>
-      <View style={{...viewLineConfig}} />
-    </View>
+      <Container {...viewLineConfig} />
+    </Container>
   )
 }
 

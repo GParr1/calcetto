@@ -230,7 +230,7 @@ export const btnPrimaryDefault = {
   ...btnDefault,
   backgroundColor: COLORS.primaryBgBtn,
   textTransform: UITextProps.UPPERCASE,
-  width: `${sizes.sizeL}%`,
+  width: `${sizes.sizeL}%`
 }
 export const btnNavLinkDefault = {
   color: COLORS.primaryText,

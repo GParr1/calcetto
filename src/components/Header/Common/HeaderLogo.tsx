@@ -5,15 +5,17 @@ import { useResponsiveStyle } from 'styles/styles.utils';
 import { ContainerProps, Headings, sizesPx, textDefault, UITextProps } from 'styles';
 import { ImageProps } from 'react-native/Libraries/Image/Image';
 import { TextProps } from 'react-native/Libraries/Text/Text';
+import { Container } from 'components/core/Container/Container'
+import { FlexDirection, FlexJustifyContent, SizesPx } from 'components/core/Container/enum'
 
 const HeaderLogo: React.FC = () => {
-  const { getResponsiveStyle } = useResponsiveStyle();
 
-  const containerConfig = getResponsiveStyle({
-    flexDirection: [ContainerProps.flexRow],
-    alignItems: [ContainerProps.alignCenter],
-    gap: [sizesPx.S]
-  })
+  const containerConfig = {
+    flexDirection: FlexDirection.ROW,
+    flex: 1,
+    alignItems: ContainerProps.alignCenter,
+    flexGap: SizesPx.S
+  }
 
   const textConfig = {
     children: "MINILIGA",
@@ -32,10 +34,10 @@ const HeaderLogo: React.FC = () => {
     accessibilityIgnoresInvertColors:true
   } as ImageProps
   return(
-    <View style={{...containerConfig}}>
+    <Container {...containerConfig}>
       <Image {...imageConfig}/>
       <Text {...textConfig}/>
-    </View>
+    </Container>
   )
 }
 

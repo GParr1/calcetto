@@ -3,9 +3,22 @@ import HeaderLogo from './Common/HeaderLogo'
 import NavLink from './Common/NavLink'
 import NavAction from './Common/NavAction'
 import MobileAction from './Common/MobileAction'
-import { View } from 'react-native';
-import { ContainerProps, sizesPx } from 'styles';
+import { Role, View } from 'react-native';
+import { borderRadiusSizes, ContainerProps, sizesPx } from 'styles';
 import { useResponsiveStyle } from 'styles/styles.utils';
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexDirection,
+  FlexJustifyContent,
+  FlexWrap,
+  SizesPx,
+  SizesRem,
+  SizeUnits
+} from 'components/core/Container/enum'
+import Button, { ButtonType, IoniconsNames } from 'components/core/Button'
+import { doSignOut } from 'utils/authUtils'
+import { COLORS } from 'components/constantStyle'
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -20,30 +33,57 @@ const Header: React.FC = () => {
     flexWrap: ['wrap']
   })
 
-  const navConfig= {
-    classBtn: 'btn'
+
+  const headerConfig = {
+    role: 'banner' as Role,
+    flexDirection: FlexDirection.ROW,
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER,
+    padding: SizesPx.L,
+    width: SizeUnits.FULL,
+    flexWrap: FlexWrap.WRAP
   }
 
+  const styleButton = {
+    display:'flex',
+    color: COLORS.primaryText,
+    transition: 'all 0.2s ease',
+    alignItems: FlexAlignItems.CENTER,
+    borderRadius: borderRadiusSizes.radiusFull,
+    borderWidth: 1,
+    paddingHorizontal: SizesRem.M,
+    paddingVertical: SizesRem.S,
+    boxShadow: `0px 4px 10px ${COLORS.primaryColor}`
+  }
 
-
-//role={'heading'} -> h1
+  const btnMobileConfig = {
+    touchableOpacityConfig: {
+      type: ButtonType.TAG,
+      onPress: () => setMenuOpen(!menuOpen),
+      style: styleButton,
+      accessibilityLabel: 'Go to dashboard'
+    },
+    ioniconsConfig: {
+      name: 'menu-outline' as IoniconsNames,
+      size: 20,
+      color: '#fff'
+    },
+    label: ''
+  }
   return (
     <>
-      <View role={'banner'} style={{...navContainerConfig}}>
+      <Container {...headerConfig}>
         <HeaderLogo />
-        <NavLink {...navConfig} />
+        <NavLink />
         <NavAction />
         {/* Mobile menu toggle */}
+        <Button {...btnMobileConfig} />
+
         <MobileAction openMenu={() => setMenuOpen(!menuOpen)} />
-      </View>
+      </Container>
 
       {/* Mobile menu content */}
-      {menuOpen && (
-        <NavLink
-          isMobile
-          classBtn="btn btn-sm w-100 mb-2"
-        />
-      )}
+      {menuOpen && <NavLink isMobile />}
     </>
   )
 }

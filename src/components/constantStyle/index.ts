@@ -12,6 +12,7 @@ export const COLORS = {
   secondaryBgBtn: 'rgb(50, 50, 50)', // background pulsante secondario
 };
 
+
 // Definizione delle dimensioni (padding, bordi, ecc.)
 export const SIZES = {
   borderRadius: 999, // Bordo arrotondato per i pulsanti

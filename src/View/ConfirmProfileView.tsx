@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react'
+import React, { useState } from 'react'
 import { handleSaveFormUser } from 'utils/authUtils'
 import CardBronze from 'components/FifaCard/CardBronze'
 import { useNavigate } from 'react-router-dom'
@@ -12,6 +12,14 @@ import ImageModal from 'components/FifaCard/ImageModal';
 import { dataURLtoFile } from 'components/FifaCard/utils';
 import { uploadImage } from 'utils/utils';
 import Loader from 'components/core/Loader';
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexDirection,
+  FlexWrap,
+  SizesPx
+} from 'components/core/Container/enum'
+import NativeText from 'components/core/NativeText'
 
 /**
  * Tipizzazione parziale per l'oggetto utente.
@@ -36,30 +44,24 @@ interface ConfirmProfileViewProps {
  * Include una card di anteprima (CardBronze) e un form dinamico (GeneralForm).
  */
 export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) => {
-  const { getResponsiveStyle } = useResponsiveStyle();
   const {customerInfo} = user
   const [dynamicValue, setDynamicValue] = useState<CustomerInfo>(customerInfo ?? {})
   const navigate = useNavigate()
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false)
 
-  const responsiveMainContainer = getResponsiveStyle({
-    flexDirection: ['row'],
-    flexWrap: ['wrap'],
-    paddingTop: [24],
-    gap:[24],
-    alignItems: [ContainerProps.alignCenter],
-  })
-
-  const trasformDinamicValue = () => {
-
+  const responsiveMainContainer = {
+    flexDirection: FlexDirection.ROW,
+    flexWrap: FlexWrap.WRAP,
+    paddingTop: SizesPx.XL,
+    gap: SizesPx.XL,
+    alignItems: FlexAlignItems.CENTER
   }
+
   // Gestione input dinamico
   const handleChange = (obj: Record<string, any>) => {
     setDynamicValue({...customerInfo,...obj})
   }
-
-
 
   // Gestione input dinamico
   const editImage = () => {
@@ -80,7 +82,7 @@ export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) 
       })
       const updateDynamicValue = {...dynamicValue, photoURL:result}
 
-      const { errorMessage, successMessage } = await handleSaveFormUser(updateDynamicValue, customerInfo)
+      const { errorMessage, successMessage } = await handleSaveFormUser(updateDynamicValue, customerInfo as CustomerInfo)
       if (successMessage) {
         navigate('/dashboard', { replace: true })
       } else if (errorMessage) {
@@ -93,40 +95,59 @@ export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) 
 
   return (
     <>
-      <Loader visible={loading}/>
-      {visible && <ImageModal visible={visible} setVisible={setVisible} handleChange={handleChange}/>}
-      <View  style={{...responsiveMainContainer}}>
-
-        <View style={{
-          flex: 1,
-          marginRight: 8,
-          alignItems: 'center',
-          minWidth: '45%',
-        }}>
-          <CardBronze scale={0.7} enableEdit={{ editImage }} dynamicValue={dynamicValue} />
-        </View>
-        <View style={{
-          flex: 1,
-          marginLeft: 8,
-          minWidth: '45%',
-        }}>
-          <View style={{
-            backgroundColor: COLORS.secondaryBg,
-            gap: 24,
-            paddingVertical: 24,
-            alignItems: 'center',
-            borderRadius: 8,
-            borderColor: COLORS.primaryColor,
-            paddingHorizontal: 16,
-            shadowColor: 'rgba(7, 244, 104, 1)',
-            shadowOpacity: 0.4,
-            shadowRadius: 15,
-          }}>
-            <Text style={{ color:COLORS.primaryText, paddingHorizontal:16,
-              fontSize: 28,
-              fontWeight: 600,
-            }} >Completa il tuo profilo</Text>
-
+      <Loader visible={loading} />
+      {visible && (
+        <ImageModal
+          visible={visible}
+          setVisible={setVisible}
+          handleChange={handleChange}
+        />
+      )}
+      <Container {...responsiveMainContainer}>
+        <Container
+          {...{
+            flex: 1,
+            marginRight: SizesPx.S,
+            flexAlignItems: FlexAlignItems.CENTER
+          }}
+        >
+          <CardBronze
+            scale={0.7}
+            enableEdit={{ editImage }}
+            dynamicValue={dynamicValue}
+          />
+        </Container>
+        <Container
+          {...{
+            flex: 1,
+            marginLeft: SizesPx.S
+          }}
+        >
+          <Container
+            {...{
+              backgroundColor: COLORS.secondaryBg,
+              gap: SizesPx.XL,
+              paddingVertical: SizesPx.XL,
+              flexAlignItems: FlexAlignItems.CENTER,
+              borderRadius: SizesPx.S,
+              borderColor: COLORS.primaryColor,
+              paddingHorizontal: SizesPx.M,
+              shadowColor: 'rgba(7, 244, 104, 1)',
+              shadowOpacity: 0.4,
+              shadowRadius: SizesPx.M
+            }}
+          >
+            <NativeText
+              as={'span'}
+              style={{
+                color: COLORS.primaryText,
+                paddingHorizontal: 16,
+                fontSize: 28,
+                fontWeight: 600
+              }}
+            >
+              {'Completa il tuo profilo'}
+            </NativeText>
             <GeneralForm
               formId="formUser"
               handleChangeInput={handleChange}
@@ -134,11 +155,10 @@ export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) 
               labels={{ submitLabel: 'SALVA' }}
               obj={customerInfo}
             />
-          </View>
-        </View>
-      </View>
+          </Container>
+        </Container>
+      </Container>
     </>
-
   )
 }
 

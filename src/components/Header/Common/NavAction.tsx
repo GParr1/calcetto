@@ -1,18 +1,72 @@
 import React from 'react'
-import LogoutBtn from 'components/Header/Common/LogoutBtn'
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexDirection,
+  FlexJustifyContent,
+  SizesPx,
+  SizesRem
+} from 'components/core/Container/enum'
+import { borderRadiusSizes, btnNavLinkDefault, ContainerProps } from 'styles'
+import Button, { ButtonType, IoniconsNames } from 'components/core/Button'
+import { StyleProp } from 'react-native'
+import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
+import { doSignOut } from 'utils/authUtils'
+import { COLORS } from 'components/constantStyle'
 
 const NavAction: React.FC = () => {
+  const containerConfig = {
+    flexDirection: FlexDirection.ROW,
+    flexJustifyContent: FlexJustifyContent.FLEX_END,
+    flex: 1,
+    alignItems: ContainerProps.alignCenter,
+    flexGap: SizesPx.S
+  }
+
+  const styleButton = {
+    color: COLORS.primaryText,
+    transition: 'all 0.2s ease',
+    alignItems: FlexAlignItems.CENTER,
+    borderRadius: borderRadiusSizes.radiusFull,
+    borderWidth: 1,
+    paddingHorizontal: SizesRem.M,
+    paddingVertical: SizesRem.S,
+    boxShadow: `0px 4px 10px ${COLORS.primaryColor}`
+  }
+
+  const btnSettingConfig = {
+    touchableOpacityConfig: {
+      type: ButtonType.TAG,
+      onPress: () => console.log('setting'),
+      style: styleButton,
+      accessibilityLabel: 'Go to dashboard'
+    },
+    ioniconsConfig: {
+      name: 'settings-outline' as IoniconsNames,
+      size: 20,
+      color: '#fff'
+    },
+    label: ''
+  }
+  const btnLogoutConfig = {
+    touchableOpacityConfig: {
+      type: ButtonType.TAG,
+      onPress: async () => await doSignOut(),
+      style: styleButton,
+      accessibilityLabel: 'Go to dashboard'
+    },
+    ioniconsConfig: {
+      name: 'log-in-outline' as IoniconsNames,
+      size: 20,
+      color: '#fff'
+    },
+    label: ''
+  }
   return (
-    <div className="d-none d-md-flex gap-2 align-items-center">
-      <button
-        className="btn"
-        onClick={() => console.log('setting')}
-        aria-label="Impostazioni"
-      >
-        <i className="bi bi-gear"></i>
-      </button>
-      <LogoutBtn />
-    </div>
+    <Container {...containerConfig}>
+      <Button {...btnSettingConfig} />
+      <Button {...btnLogoutConfig} />
+    </Container>
   )
 }
 

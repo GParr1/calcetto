@@ -5,6 +5,8 @@ import RegisterTwoSteps from 'components/Auth/Register/Register'
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { ContainerProps } from 'styles';
 import ModalInfo from 'components/Modal/ModalInfo';
+import { Container } from 'components/core/Container/Container'
+import { FlexAlignItems, FlexDirection } from 'components/core/Container/enum'
 
 interface AuthViewProps {
   register?: boolean
@@ -21,12 +23,12 @@ export const AuthView: React.FC<AuthViewProps> = ({ register = false }) => {
   const [error, setError] = useState<string>('')
   const [success, setSuccess] = useState<string>('')
 
-  const responsiveMainContainer = getResponsiveStyle({
-    flexDirection: ['column'],
-    gap:[24],
-    alignItems: [ContainerProps.alignCenter],
-    width: ['100%','100%','50%']
-  })
+  const responsiveMainContainer = {
+    flexDirection: FlexDirection.COLUMN,
+    flexGap:24,
+    flexAlignItems: FlexAlignItems.CENTER,
+    width: '100%'
+  }
   const modalProps = {
     title: error ? "Errore" : '',
     type: error ? 'error': 'success',
@@ -37,14 +39,14 @@ export const AuthView: React.FC<AuthViewProps> = ({ register = false }) => {
   const registerTwoStepsProps = { setSuccess, setError}
   const loginProps = { setSuccess, setError}
   return  (
-    <View role={'region'} style={{ ...responsiveMainContainer }}>
+    <Container role={'region'} { ...responsiveMainContainer }>
       {register ?
         <RegisterTwoSteps {...registerTwoStepsProps}/> :
         <Login {...loginProps} />}
       {error || success && (
         <ModalInfo {...modalProps} />
       )}
-    </View>
+    </Container>
   )
 }
 

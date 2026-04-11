@@ -52,12 +52,14 @@ const App: FC = () => {
     )
   }
   const resetPassConfig = {
-    path: "/reset-password", element:(<>
-      <MainContainer>
-        <ResetPasswordView />
-      </MainContainer>
-      <FooterContainer/>
-    </>)
+    path: "/reset-password", element:(
+      <>
+        <MainContainer>
+          <ResetPasswordView />
+        </MainContainer>
+        <FooterContainer/>
+      </>
+    )
   }
   const dashboardConfig = {
     path: "/dashboard",

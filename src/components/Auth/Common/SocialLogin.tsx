@@ -1,23 +1,29 @@
 import React from 'react'
-import { View } from 'react-native';
-import { useResponsiveStyle } from 'styles/styles.utils';
-import { btnSecondaryDefault, ContainerProps, UITextProps } from 'styles';
+import { btnSecondaryDefault, ContainerProps, sizes, UITextProps } from 'styles';
 import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button';
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexDirection,
+  FlexJustifyContent,
+  SizesRem,
+  SizeUnits
+} from 'components/core/Container/enum'
+import { COLORS } from 'components/constantStyle'
 
 interface SocialLoginProps {
   handleLogin: (obj: { action: string }) => Promise<void>
 }
 
 const SocialLogin: React.FC<SocialLoginProps> = ({ handleLogin }) => {
-  const { getResponsiveStyle } = useResponsiveStyle();
 
-  const viewConfig = getResponsiveStyle({
-    width: ['100%'],
-    flexDirection: [ContainerProps.flexRow],
-    justifyContent:[ ContainerProps.justifyCenter],
-    alignItems: ['center'],
-    gap: ['1rem']
-  })
+  const viewConfig = {
+    width: SizeUnits.FULL,
+    flexDirection: FlexDirection.ROW,
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER,
+    flexGap: SizesRem.L
+  }
 
   const btnGoogleConfig = {
     touchableOpacityConfig: {
@@ -39,6 +45,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({ handleLogin }) => {
     },
     label:'Google',
   } as ButtonProps
+
   const btnFacebookConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
@@ -60,10 +67,10 @@ const SocialLogin: React.FC<SocialLoginProps> = ({ handleLogin }) => {
     label:'Facebook',
   } as ButtonProps
   return(
-      <View style={{...viewConfig}}>
+      <Container {...viewConfig}>
         <Button {...btnGoogleConfig}/>
         <Button {...btnFacebookConfig}/>
-      </View>
+      </Container>
 
   )
 }

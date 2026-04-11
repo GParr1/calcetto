@@ -1,55 +1,59 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import LogoutBtn from 'components/Header/Common/LogoutBtn'
-import { View } from 'react-native';
+import { StyleProp, View } from 'react-native';
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { btnNavLinkDefault, btnPrimaryDefault, ContainerProps, textDefault } from 'styles';
 import Button, { ButtonType } from 'components/core/Button';
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexDirection, FlexJustifyContent,
+  SizesPx,
+  SizeUnits
+} from 'components/core/Container/enum'
+import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
+import NavAction from 'components/Header/Common/NavAction'
 
 interface NavLinkProps {
   isMobile?: boolean
-  classContainer?: RNStyleObject
-  classBtn?: string
 }
 
 /** Desktop buttons */
 const NavLink: React.FC<NavLinkProps> = ({
                                            isMobile = false,
-                                           classContainer = '',
-                                           classBtn = 'btn'
                                          }) => {
   const navigate = useNavigate()
-  const { getResponsiveStyle } = useResponsiveStyle();
 
-  const containerConfig= getResponsiveStyle({
-      display: ['flex'],
-      flexDirection: [ContainerProps.flexRow],
-      marginTop: [8, 8, 0],
-      padding: [12, 12, 0],
-      width: ['100%','100%', 'auto' ],
-      alignItems: ['center'],
-      gap:[8]
-    })
-
+  const containerConfig = {
+    display: 'flex',
+    flex: 1,
+    flexDirection: FlexDirection.ROW,
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    marginTop: [SizesPx.S, SizesPx.S, SizesPx.NONE],
+    padding: [SizesPx.M, SizesPx.M, SizesPx.NONE],
+    width: [SizeUnits.FULL, SizeUnits.FULL, 'auto'],
+    alignItems: FlexAlignItems.CENTER,
+    flexGap: SizesPx.S
+  }
+  const styleButton = {
+    ...btnNavLinkDefault
+  } as StyleProp<ViewStyle>
   const btnHomeConfig = {
     touchableOpacityConfig: {
       type: ButtonType.TAG,
       onPress: () => navigate('/dashboard'),
-      style: {
-        ...btnNavLinkDefault,
-      },
-      accessibilityLabel: "Go to dashboard",
+      style: styleButton,
+      accessibilityLabel: 'Go to dashboard'
     },
-    label: 'Home',
+    label: 'Home'
   }
   const btnProfileConfig = {
     touchableOpacityConfig: {
       type: ButtonType.TAG,
       onPress: () => navigate('/profile'),
-      style: {
-        ...btnNavLinkDefault,
-      },
-      accessibilityLabel: "Go to Profile",
+      style: styleButton,
+      accessibilityLabel: 'Go to Profile'
     },
     label: 'Profilo'
   }
@@ -57,31 +61,18 @@ const NavLink: React.FC<NavLinkProps> = ({
     touchableOpacityConfig: {
       type: ButtonType.TAG,
       onPress: () => navigate('/partite'),
-      style: {
-        ...btnNavLinkDefault,
-      },
-      accessibilityLabel: "Go to Match",
+      style: styleButton,
+      accessibilityLabel: 'Go to Match'
     },
-    label: 'Partite',
+    label: 'Partite'
   }
   return (
-    <View role={'navigation'} style={{...containerConfig}}>
-      {isMobile && (
-        <>
-          <button
-            className="btn"
-            onClick={() => console.log('setting')}
-            aria-label="Impostazioni"
-          >
-            <i className="bi bi-gear"></i>
-          </button>
-          <LogoutBtn />
-        </>
-      )}
-      <Button {...btnHomeConfig}/>
-      <Button {...btnProfileConfig}/>
-      <Button {...btnMatchConfig}/>
-    </View>
+    <Container role={'navigation'} {...containerConfig}>
+      {isMobile && <NavAction />}
+      <Button {...btnHomeConfig} />
+      <Button {...btnProfileConfig} />
+      <Button {...btnMatchConfig} />
+    </Container>
   )
 }
 

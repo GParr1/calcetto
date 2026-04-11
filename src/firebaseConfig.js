@@ -26,5 +26,5 @@ const storage = getStorage(app)
 const googleProvider = new GoogleAuthProvider()
 const facebookProvider = new FacebookAuthProvider()
 
-db()
+//db()
 export { auth, googleProvider, facebookProvider, db, storage }

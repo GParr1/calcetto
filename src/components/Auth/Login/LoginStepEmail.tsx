@@ -11,6 +11,8 @@ import GeneralForm from 'components/Form/GeneralForm';
 import Link, { LinkProps } from 'components/core/Link';
 import { LoginLabelsProps } from 'properties/authView'
 import { DoFirebaseLoginParms } from 'utils/authUtils'
+import { Container } from 'components/core/Container/Container'
+import { FlexAlignItems, SizesPx, SizesRem, SizeUnits } from 'components/core/Container/enum'
 
 interface LoginStepEmailProps {
   handleLogin: (obj: DoFirebaseLoginParms) => Promise<void>
@@ -23,16 +25,16 @@ const LoginStepEmail: React.FC<LoginStepEmailProps> = ({ handleLogin, handleSetE
   const headerAuthViewProps = {
     message: labels.welcome
   }
-  const responsiveFormContainer = getResponsiveStyle({
-    alignItems: ['center'],
-    gap: ['0rem','0rem','1rem'],
-    width: ['100%'],
-  })
-  const responsiveActionContainer = getResponsiveStyle({
-    alignItems: ['center'],
+  const responsiveFormContainer = {
+    flexAlignItems: FlexAlignItems.CENTER,
+    gap: SizesRem.L,
+    width: SizeUnits.FULL
+  }
+  const responsiveActionContainer = {
+    flexAlignItems: FlexAlignItems.CENTER,
     width: ['70%'],
-    padding: [16]
-  })
+    padding: SizesPx.L
+  }
   const btnCreateAccountConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
@@ -53,24 +55,23 @@ const LoginStepEmail: React.FC<LoginStepEmailProps> = ({ handleLogin, handleSetE
   return (
     <>
       {/* 🧭 Header */}
-      <View role={'region'} style={{ ...responsiveFormContainer }}>
+      <Container role={'region'} { ...responsiveFormContainer }>
         <HeaderAuthView {...headerAuthViewProps}/>
         <SocialLogin handleLogin={handleLogin} />
-      </View>
-
+      </Container>
       <DividerLogin />
-      <View role={'region'} style={{ ...responsiveFormContainer }}>
+      <Container role={'region'} { ...responsiveFormContainer }>
         <GeneralForm
           formId="email-step"
           handleSubmit={handleSetEmail}
           labels={{ submitLabel: 'AVANTI' }}
           obj={{}}
         />
-      </View>
-      <View role={'region'} style={{ ...responsiveActionContainer }}>
+      </Container>
+      <Container role={'region'} { ...responsiveActionContainer }>
         <Button {...btnCreateAccountConfig}/>
         <Link {...linkConfig}/>
-      </View>
+      </Container>
     </>
   )
 }
