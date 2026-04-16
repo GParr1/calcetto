@@ -1,63 +1,100 @@
-import { User } from 'types/user';
 import { Match } from 'types/match';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { findInArrByUid } from 'utils/utils';
-import { Image, Text, View } from 'react-native';
-import { COLORS } from 'components/constantStyle';
-import { Assets } from 'assets/assets';
+import { Text } from 'react-native';
 import MatchActions from 'components/Matches/MatchActions';
-import { ModalMode } from 'components/Matches/MatchList';
+import { Container } from 'components/core/Container/Container'
+import { BorderStyle, COLORS, SizesPx } from 'components/core/Container/enum'
+import { Accordion } from 'components/core/Accordion/Accordion'
+import {  IoniconsNames } from 'components/core/Button'
+import { btnSecondaryDefault, UITextProps } from 'styles'
+import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
+import MatchDetail from 'components/Matches/MatchDetail/MatchDetail'
+import { Ionicons } from '@expo/vector-icons'
+import MatchContent from 'components/Matches/MatchContent'
+import { DetailOverlay, MatchCardProps } from 'components/Matches/types'
 
-interface MatchCardProps {
-  match: Match
 
-  uid: string
-  user: User
-  handleJoin: (match: string) => void
-  openModal: (mode: ModalMode, matchId: string | null) => void
-
-
-}
-
-const MatchCard : FC<MatchCardProps> = ( {match, uid, user, handleJoin, openModal}) => {
+const MatchCard : FC<MatchCardProps> = ( {match, uid, user, openModal}) => {
   const {campo, data, tipo, players} = match
-  const playerExists = findInArrByUid(
-    players,
-    uid
-  )
-  const textStyleConfig = {
-    style:{color: COLORS.primaryText}
+  const playerExists = findInArrByUid(players ?? [], uid)
+  const [detailOverlay, setDetailOverlay] = useState<DetailOverlay>({
+    show: false,
+    match: null,
+    closeDetailOverlay: null
+  })
+  const openDetailOverlay = (match: Match, closeDetailOverlay: () => void) => {
+    setDetailOverlay({ show: true, match, closeDetailOverlay })
   }
-  const ContentCard: FC = () => (
-    <View style={{gap:8}}>
-      <Text {...textStyleConfig}>Campo: <b>{campo}</b></Text>
-      <Text {...textStyleConfig}>Data: {new Date(data).toLocaleString()}</Text>
-      <Text {...textStyleConfig}>Calcio a {tipo}</Text>
-      <Text {...textStyleConfig}>
-        <b>{players.length}</b> iscritti,
-        {playerExists && <b> Sei già iscritto</b>}
-        {!playerExists && <b> Non sei ancora iscritto</b>}
-      </Text>
-    </View>
+  const closeDetailOverlay = () => {
+    setDetailOverlay({ show: false, match: null, closeDetailOverlay: null })
+  }
+  const matchCardContainer = {
+    backgroundColor: COLORS.PRIMARY_BG,
+    border: BorderStyle.SOLID,
+    borderColor: COLORS.PRIMARY_COLOR,
+    borderSize: 1,
+    borderRadius: SizesPx.XL,
+    padding: SizesPx.L,
+    flexGap: SizesPx.L
+  }
 
-  )
+  const overlayConfig = {
+    visible: detailOverlay.show,
+    closeOverlay: () =>
+      setDetailOverlay({ show: false, match: null, closeDetailOverlay: null })
+  }
+
+  const ioniconsDetailsConfig = {
+    name: 'people-outline' as IoniconsNames,
+    size: 20,
+    color: '#fff'
+  }
+    const matchContentConfig= {
+      campo,
+      data,
+      tipo,players
+    }
   return (
-    <View role={'listitem'} style={{borderWidth:1, borderColor: COLORS.primaryColor, borderRadius: 24, padding:16}}>
-      <View style={{alignItems:'center'}}>
-        <Image source={Assets.CAMPO_CALCIO_BG} style={{ width: '100%', height: 120 }}/>
-      </View>
-      <ContentCard/>
-      <MatchActions
-        match={match}
-        user={user}
-        handleJoin={handleJoin}
-        //handleRemove={handleRemove}
-        //handleModalAddGuest={handleModalAddGuest}
-        //handleModalRemoveGuest={handleModalRemoveGuest}
-        //handleDeleteMatch={handleDeleteMatch}
-        openModal={openModal}
-      />
-    </View>
+    <Container role={'listitem'} {...matchCardContainer}>
+      <Text
+        style={[
+          { textAlign: 'center', color: COLORS.PRIMARY_TEXT, fontWeight: 'bold' }
+        ]}
+      >
+        {playerExists ? 'Sei già iscritto' : 'Non sei ancora iscritto'}
+      </Text>
+      <MatchContent {...matchContentConfig} />
+      <Container
+        onPress={async () => openDetailOverlay(match, closeDetailOverlay)}
+        style={{
+          ...btnSecondaryDefault,
+          width: 'auto',
+          textTransform: 'capitalize',
+          fontWeight: '400',
+          gap: 8
+        }}
+      >
+        <Ionicons {...ioniconsDetailsConfig} />
+        <Text>Formazione</Text>
+      </Container>
+      {/* 🟣 Overlay / dettaglio partita */}
+      {detailOverlay.show && (
+        <OverlayBackdrop {...overlayConfig}>
+          <MatchDetail match={match} mode={5} />
+        </OverlayBackdrop>
+      )}
+      <Accordion title="Dettagli partita">
+        <MatchActions
+          match={match}
+          user={user}
+          //handleModalAddGuest={handleModalAddGuest}
+          //handleModalRemoveGuest={handleModalRemoveGuest}
+          //handleDeleteMatch={handleDeleteMatch}
+          openModal={openModal}
+        />
+      </Accordion>
+    </Container>
   )
 }
 

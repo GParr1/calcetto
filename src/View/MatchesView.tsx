@@ -7,6 +7,9 @@ import { Match } from 'types/match';
 import { User } from 'types/user';
 import { View } from 'react-native';
 import { useResponsiveStyle } from 'styles/styles.utils';
+import { Container } from 'components/core/Container/Container'
+import { FlexDirection, SizesPx } from 'components/core/Container/enum'
+import { sizesPx } from 'styles'
 
 interface MatchesViewProps {
   user: User
@@ -15,7 +18,6 @@ interface MatchesViewProps {
 const MatchesView: React.FC<MatchesViewProps> = ({ user }) => {
   const matches = useSelector(getMatches) as Match[] // 👈 forza il tipo
   const uid = user?.userLogin?.uid || ''
-  const { getResponsiveStyle } = useResponsiveStyle();
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -25,25 +27,30 @@ const MatchesView: React.FC<MatchesViewProps> = ({ user }) => {
   }, [])
 
   const matchesByPlayerId = getMatchesByPlayerId(matches, uid) as Match[]
-  const responsiveMainContainer = getResponsiveStyle({
-    flexDirection: ['column','column','column'],
-    gap:[24],
-    width: ['80vw']
-  })
+  const responsiveMainContainer = {
+    width:"95vw",
+    flexDirection: FlexDirection.COLUMN,
+    flexGap: SizesPx.XL,
+  }
+
+  const matchListConfig = {
+    user,
+    matches: matches ?? [],
+    title: `Partite Disponibili (${matches?.length ?? 0})`,
+    showAddMatch: true
+  }
+
+  const matchListByPayerConfig = {
+    user,
+    matches: matchesByPlayerId ?? [],
+    title: 'Le tue partite',
+    showAddMatch: true
+  }
   return (
-    <View style={{ ...responsiveMainContainer }}>
-      <MatchList
-        user={user}
-        matches={matches || []}
-        title={`Partite Disponibili (${matches?.length ?? 0})`}
-        showAddMatch
-      />
-      <MatchList
-        user={user}
-        matches={matchesByPlayerId || []}
-        title="Le tue partite"
-      />
-    </View>
+    <Container {...responsiveMainContainer}>
+      <MatchList {...matchListConfig} />
+      <MatchList {...matchListByPayerConfig} />
+    </Container>
   )
 }
 

@@ -182,13 +182,12 @@ export const FORM_CREATE_MATCH = {
       className: 'form-control'
     },
     {
-      type: 'datetime-local',
+      type: 'date',
       name: 'data',
       label: 'Data',
       placeholder: 'Seleziona data e ora',
-      defaultValue: '',
       required: true,
-      className: 'form-control'
+      defaultValue: ''
     },
     {
       type: 'select',

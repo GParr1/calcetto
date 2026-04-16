@@ -10,13 +10,15 @@ import { useResponsiveStyle } from 'styles/styles.utils';
 import { ImageBackgroundProps, ImageProps } from 'react-native/Libraries/Image/Image';
 import StatsComponent from 'components/FifaCard/StatsComponent';
 import { Ionicons } from '@expo/vector-icons';
+import { Player } from 'types'
+import { Container } from 'components/core/Container/Container'
 
 interface EditFunction {
   editImage?: () => void
 }
 interface CardBronzeProps {
   enableEdit?: EditFunction;
-  dynamicValue?: CustomerInfo;
+  dynamicValue?: CustomerInfo | Player;
   previewImg?: string;
   scale: number
   style?: object;
@@ -30,7 +32,7 @@ const CardBronze: FC<CardBronzeProps> = ({
                                                  style = {},
                                                }) => {
   const { getResponsiveStyle } = useResponsiveStyle();
-
+  const isMini = scale<0.3
   const stateCustomerInfo = useSelector(getCustomerIndo) || {};
   const customerInfo = dynamicValue || stateCustomerInfo;
   const {editImage} = enableEdit
@@ -48,10 +50,9 @@ const CardBronze: FC<CardBronzeProps> = ({
     [customerInfo]
   );
 
-  const fullName =
-    customerInfo.firstName || customerInfo.lastName
-      ? `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim()
-      : customerInfo.displayName || '';
+  const fullName = (customerInfo.firstName || customerInfo.lastName) ?
+      `${customerInfo.firstName ?? ''} ${customerInfo.lastName ?? ''}`.trim()
+      : customerInfo.displayName ?? '';
 
   const cardBackground: ImageSourcePropType = getCardTier(customerInfo.overall || 60);
 
@@ -127,84 +128,86 @@ const CardBronze: FC<CardBronzeProps> = ({
     }),
   }
   const nameContainerConfig = {
-    style:getResponsiveStyle({
-      left:['10%'],
-      right:['10%'],
-      top:['67%'],
-      position: ['absolute'],
-      width: ['80%'],
-      height: ['9%'],
-      justifyContent: ['center'],
-      alignItems: ['center']
-    }),
+    style: {
+      left: '10%',
+      right: '10%',
+      top: '67%',
+      position: 'absolute',
+      width: '80%',
+      height: isMini ? '20%' : '9%',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
   }
 
   const posizioneConfig = {
     children: customerInfo.position ?? 'ATT',
-    style:getResponsiveStyle({
+    style: getResponsiveStyle({
       position: ['absolute'],
       top: ['21.5%'],
       left: ['14.2%'],
-      fontSize: [40*scale],
+      fontSize: [40 * scale],
       width: ['11.65%'],
       fontWeight: ['500']
-    }),
+    })
   }
   const nameConfig = {
     children: fullName,
-    style:getResponsiveStyle({
-      fontFamily: ["'Montserrat', Arial, sans-serif"],
-      textAlign: ['center'],
-      textTransform: ['uppercase'],
-      fontWeight: [800],
-      lineHeight:[1.1],
-      color:['#3f1200'],
-      fontSize: [32*scale],
-    }),
+    adjustsFontSizeToFit: isMini,
+    style: {
+      fontFamily: "'Montserrat', Arial, sans-serif",
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      fontWeight: 800,
+      ...(!isMini && { lineHeight: 1.1 }),
+      fontSize: isMini ? 10 : 32 * scale,
+      color: '#3f1200'
+    }
   }
 
   return (
     <ImageBackground {...imageBGConfig}>
       {/* Foto giocatore */}
-      {editImage &&
-        <Pressable style={{
-          position: 'absolute',
-          top: '14%',
-          right: '10%',
-          width: '55%',
-          height: '52%',
-          borderWidth: 1,
-          borderColor: 'rgb(0 0 0)',
-          zIndex:2
-        }}
+      {editImage && (
+        <Container
+          style={{
+            position: 'absolute',
+            top: '14%',
+            right: '10%',
+            width: '55%',
+            height: '52%',
+            borderWidth: 1,
+            borderColor: 'rgb(0 0 0)',
+            zIndex: 2
+          }}
           onPress={editImage}
         >
           <Ionicons name="camera" size={30} color="black" />
-        </Pressable>
-      }
+        </Container>
+      )}
 
-      <Image {...imagePlayerConfig}/>
+      <Image {...imagePlayerConfig} />
 
       {/* Nazione */}
-      <Image {...imageNationConfig}/>
+      <Image {...imageNationConfig} />
       {/* Club */}
       {customerInfo.favoriteTeam ? (
         <Image {...imageFavoriteTeamConfig} />
       ) : (
-        <View {...imageFavoriteTeamEmptyConfig} />
+        <Container {...imageFavoriteTeamEmptyConfig} />
       )}
       {/* Overall */}
-      <Text {...overallConfig}/>
+      <Text {...overallConfig} />
       {/* posizione */}
-      <Text {...posizioneConfig}/>
+      <Text {...posizioneConfig} />
       {/* Nome */}
-      <View {...nameContainerConfig}>
-        <Text {...nameConfig}/>
-      </View>
+      <Container {...nameContainerConfig}>
+        <Text {...nameConfig} />
+      </Container>
       {/* Attributi */}
-      <StatsComponent stats={stats} scale={scale}/>
+      {!isMini && <StatsComponent stats={stats} scale={scale} />}
     </ImageBackground>
-  );
+  )
 };
 
 

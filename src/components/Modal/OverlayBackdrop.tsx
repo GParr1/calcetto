@@ -4,63 +4,54 @@ import {
   Pressable,
   StyleSheet, View,
 } from 'react-native';
-import MatchDetail from 'components/Matches/MatchDetail'
 import { Ionicons } from '@expo/vector-icons'
-import { Match } from 'types/match';
+import { Container } from 'components/core/Container/Container'
+import {
+  COLORS,
+  FlexJustifyContent,
+  SizesPx,
+  SizeUnits
+} from 'components/core/Container/enum'
 
 interface OverlayBackdropProps {
-  match: Match
   visible: boolean
   closeOverlay: () => void
+  children: React.ReactNode
 }
-const OverlayBackdrop: FC<OverlayBackdropProps>  = ({ visible, closeOverlay, match }) => {
+const OverlayBackdrop: FC<OverlayBackdropProps> = ({
+  visible,
+  closeOverlay,
+  children
+}) => {
+  const modalConf = {
+    visible,
+    transparent: true,
+    presentationStyle: 'overFullScreen',
+    animationType: 'fade',
+    onRequestClose: closeOverlay
+  }
+  const contentConf = {
+    width: SizeUnits.FULL,
+    height: SizeUnits.FULL,
+    overflow: 'hidden',
+    padding: SizesPx.XL,
+    backgroundColor: COLORS.SECONDARY_BG
+  }
   return (
-    <Modal
-      visible={visible}
-      transparent
-      presentationStyle={'overFullScreen'}
-      animationType="fade"
-      onRequestClose={closeOverlay} // Android back button
-    >
-
-        {/* Content */}
-        <View
-          style={styles.content}
+    <Modal {...modalConf}>
+      {/* Content */}
+      <Container {...contentConf}>
+        {/* Close button */}
+        <Pressable
+          onPress={closeOverlay}
+          style={{ alignSelf: 'flex-end', marginBottom: 10 }}
         >
-          {/* Close button */}
-          <Pressable
-            onPress={closeOverlay}
-            style={styles.closeButton}
-          >
-            <Ionicons name="close" size={24} color="#000" />
-          </Pressable>
-
-          <MatchDetail match={match} />
-        </View>
+          <Ionicons name="close" size={24} color={COLORS.PRIMARY_TEXT} />
+        </Pressable>
+        {children}
+      </Container>
     </Modal>
   )
 }
 
 export default OverlayBackdrop
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20
-  },
-  content: {
-    width: '100%',
-    height: '100%',
-    overflow: 'scroll',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 10
-  }
-})

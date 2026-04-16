@@ -24,7 +24,8 @@ import {
   UploadImageResult,
   CalculateAttributesParams,
   Attributes,
-  User
+  User,
+  AnalyzeMatch
 } from 'src/types'
 import { Assets } from 'assets/assets';
 import { ImageSourcePropType } from 'react-native';
@@ -163,35 +164,73 @@ export const balanceTeams = (players: Player[] = []): TeamBalance => {
 /**
  * Restituisce gli id dei giocatori di una squadra
  */
-export const getTeamIds = (team: Player[] = []): string[] => team.map(p => p.id)
+export const getTeamIds = (team: Player[] = []): string[] => team.map((p) => p.id)
 
 /**
  * Analizza una partita tra due squadre
  */
-export const analyzeMatch = (teamA: Player[], teamB: Player[]): MatchAnalysis | null => {
+export const analyzeMatch = (
+  teamA: Player[],
+  teamB: Player[]
+): AnalyzeMatch | null => {
   if (!teamA.length || !teamB.length) return null
-  const avgA = teamA.reduce((s, x) => s + x.overall, 0) / teamA.length
-  const avgB = teamB.reduce((s, x) => s + x.overall, 0) / teamB.length
+
+  const avgA =
+    teamA.reduce((s, x) => s + Number(x.overall), 0) / teamA.length
+  const avgB =
+    teamB.reduce((s, x) => s + Number(x.overall), 0) / teamB.length
   const totalAvg = avgA + avgB
-  const possessionA = Math.round((avgA / totalAvg) * 100)
+
+  // ⚽ Possesso (meno estremo)
+  const possessionA = Math.round(50 + (avgA - avgB) * 0.8)
   const possessionB = 100 - possessionA
-  const passAccuracyA = Math.round(Math.random() * 25 + 70 * (avgA / 90))
-  const passAccuracyB = Math.round(Math.random() * 25 + 70 * (avgB / 90))
-  const shotsA = Math.max(1, Math.round(Math.random() * 7 + 3 * (avgA / 90)))
-  const shotsB = Math.max(1, Math.round(Math.random() * 7 + 3 * (avgB / 90)))
-  const shotsOnTargetA = Math.round(shotsA * (0.5 + Math.random() * 0.2))
-  const shotsOnTargetB = Math.round(shotsB * (0.5 + Math.random() * 0.2))
-  const expectedGoalsA = Math.round(shotsOnTargetA * (avgA / (avgA + avgB)) * (0.6 + Math.random() * 0.2))
-  const expectedGoalsB = Math.round(shotsOnTargetB * (avgB / (avgA + avgB)) * (0.6 + Math.random() * 0.2))
+
+  // 🎯 Pass accuracy (più stabile)
+  const passAccuracyA = Math.round(
+    65 + (avgA / 100) * 20 + (Math.random() * 6 - 3)
+  )
+  const passAccuracyB = Math.round(
+    65 + (avgB / 100) * 20 + (Math.random() * 6 - 3)
+  )
+
+  // 🥅 Tiri (dipendono da possesso + qualità)
+  const shotsA = Math.max(
+    1,
+    Math.round((possessionA / 100) * 10 + (avgA - 60) * 0.1 + (Math.random() * 2 - 1))
+  )
+  const shotsB = Math.max(
+    1,
+    Math.round((possessionB / 100) * 10 + (avgB - 60) * 0.1 + (Math.random() * 2 - 1))
+  )
+
+  // 🎯 Tiri in porta (più realistico)
+  const shotsOnTargetA = Math.round(shotsA * (0.4 + avgA / 200))
+  const shotsOnTargetB = Math.round(shotsB * (0.4 + avgB / 200))
+
+  // ⚽ Conversione gol (molto importante!)
+  const conversionRateA = 0.2 + avgA / 200 // ~0.2–0.65
+  const conversionRateB = 0.2 + avgB / 200
+
+  const goalsA = Math.round(
+    shotsOnTargetA * conversionRateA * (0.85 + Math.random() * 0.3)
+  )
+  const goalsB = Math.round(
+    shotsOnTargetB * conversionRateB * (0.85 + Math.random() * 0.3)
+  )
+
   const winner: 'Squadra A' | 'Squadra B' | 'Pareggio' =
-    expectedGoalsA > expectedGoalsB ? 'Squadra A' : expectedGoalsB > expectedGoalsA ? 'Squadra B' : 'Pareggio'
+    goalsA > goalsB
+      ? 'Squadra A'
+      : goalsB > goalsA
+        ? 'Squadra B'
+        : 'Pareggio'
 
   return {
     possession: { teamA: possessionA, teamB: possessionB },
     passAccuracy: { teamA: passAccuracyA, teamB: passAccuracyB },
     shots: { teamA: shotsA, teamB: shotsB },
     shotsOnTarget: { teamA: shotsOnTargetA, teamB: shotsOnTargetB },
-    goals: { teamA: expectedGoalsA, teamB: expectedGoalsB },
+    goals: { teamA: goalsA, teamB: goalsB },
     winner
   }
 }

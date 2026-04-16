@@ -7,9 +7,9 @@ export interface MatchInfo {
   campo: string
   data: string
   tipo: string
-  players: Player[]
-  teamBalance: TeamBalance
-  result: MatchResult
+  players?: Player[]
+  teamBalance?: TeamBalance
+  result?: MatchResult
 }
 
 export interface MatchResult {
@@ -23,6 +23,18 @@ export interface TeamBalance {
   teamB: Player[]
 }
 
+interface Teams {
+  teamA: string
+  teamB: string
+}
+export interface AnalyzeMatch {
+  possession: Teams
+  passAccuracy: Teams
+  shots: Teams
+  shotsOnTarget: Teams
+  goals: Teams
+  winner: string
+}
 /** Analisi di una partita */
 export interface MatchAnalysis {
   possession: { teamA: number; teamB: number }

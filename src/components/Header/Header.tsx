@@ -8,6 +8,7 @@ import { borderRadiusSizes, ContainerProps, sizesPx } from 'styles';
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { Container } from 'components/core/Container/Container'
 import {
+  DisplayContainer,
   FlexAlignItems,
   FlexDirection,
   FlexJustifyContent,
@@ -19,24 +20,18 @@ import {
 import Button, { ButtonType, IoniconsNames } from 'components/core/Button'
 import { doSignOut } from 'utils/authUtils'
 import { COLORS } from 'components/constantStyle'
+import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { getResponsiveStyle } = useResponsiveStyle();
-
-  const navContainerConfig=  getResponsiveStyle({
-    flexDirection: [ContainerProps.flexRow],
-    justifyContent: [ContainerProps.justifySpaceBetween],
-    alignItems: [ContainerProps.alignCenter],
-    padding: [sizesPx.L],
-    width: ["100%"],
-    flexWrap: ['wrap']
-  })
-
 
   const headerConfig = {
     role: 'banner' as Role,
-    flexDirection: FlexDirection.ROW,
+    flexDirection: {
+      mobile: FlexDirection.ROW,
+      tablet: FlexDirection.ROW,
+      desktop: FlexDirection.ROW
+    },
     flexJustifyContent: FlexJustifyContent.CENTER,
     flexAlignItems: FlexAlignItems.CENTER,
     padding: SizesPx.L,
@@ -70,6 +65,16 @@ const Header: React.FC = () => {
     },
     label: ''
   }
+  const subMenuContainer = {
+    flexGap:SizesPx.XL,
+  }
+  const mobileButton ={
+    display: {
+      mobile: DisplayContainer.FLEX,
+      tablet: DisplayContainer.NONE,
+      desktop: DisplayContainer.NONE
+    }
+  }
   return (
     <>
       <Container {...headerConfig}>
@@ -77,13 +82,21 @@ const Header: React.FC = () => {
         <NavLink />
         <NavAction />
         {/* Mobile menu toggle */}
-        <Button {...btnMobileConfig} />
-
-        <MobileAction openMenu={() => setMenuOpen(!menuOpen)} />
+        <Container {...mobileButton}>
+          <Button {...btnMobileConfig} />
+        </Container>
       </Container>
-
-      {/* Mobile menu content */}
-      {menuOpen && <NavLink isMobile />}
+      {menuOpen && (
+        <OverlayBackdrop
+          visible={menuOpen}
+          closeOverlay={() => setMenuOpen(!menuOpen)}
+        >
+          <Container {...subMenuContainer}>
+            <NavLink isMobile />
+            <NavAction isMobile />
+          </Container>
+        </OverlayBackdrop>
+      )}
     </>
   )
 }

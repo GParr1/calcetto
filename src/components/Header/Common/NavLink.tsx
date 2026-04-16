@@ -7,8 +7,10 @@ import { btnNavLinkDefault, btnPrimaryDefault, ContainerProps, textDefault } fro
 import Button, { ButtonType } from 'components/core/Button';
 import { Container } from 'components/core/Container/Container'
 import {
+  DisplayContainer,
   FlexAlignItems,
-  FlexDirection, FlexJustifyContent,
+  FlexDirection,
+  FlexJustifyContent,
   SizesPx,
   SizeUnits
 } from 'components/core/Container/enum'
@@ -26,13 +28,22 @@ const NavLink: React.FC<NavLinkProps> = ({
   const navigate = useNavigate()
 
   const containerConfig = {
-    display: 'flex',
-    flex: 1,
-    flexDirection: FlexDirection.ROW,
+    display: isMobile
+      ? DisplayContainer.FLEX
+      : {
+          mobile: DisplayContainer.NONE,
+          tablet: DisplayContainer.FLEX,
+          desktop: DisplayContainer.FLEX
+        },
+    ...(!isMobile && {flex: 1}),
+    flexDirection: {
+      mobile: FlexDirection.COLUMN,
+      tablet: FlexDirection.ROW,
+      desktop: FlexDirection.ROW
+    },
     flexJustifyContent: FlexJustifyContent.CENTER,
     marginTop: [SizesPx.S, SizesPx.S, SizesPx.NONE],
     padding: [SizesPx.M, SizesPx.M, SizesPx.NONE],
-    width: [SizeUnits.FULL, SizeUnits.FULL, 'auto'],
     alignItems: FlexAlignItems.CENTER,
     flexGap: SizesPx.S
   }

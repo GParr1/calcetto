@@ -83,3 +83,7 @@ export enum SizesRem {
   S = '0.5rem', // 8px ≈ 0.5rem
   NONE = '0rem'
 }
+export enum DisplayContainer {
+  NONE='none',
+  FLEX= 'flex'
+}

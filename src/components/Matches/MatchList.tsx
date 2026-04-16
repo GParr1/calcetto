@@ -1,39 +1,19 @@
 import React, { useState } from 'react'
 import { getObjFromForm } from 'utils/utils'
 import ModalForm from 'components/Modal/ModalForm'
-import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
 import {
   handleCreateMatchUtils,
   handleDeleteMatchUtils,
   handleJoinGuestMatch,
-  handleJoinMatch,
   handleRemoveGuestMatch,
   handleRemoveMatch,
 } from 'utils/matchUtils'
 import MatchSlider from 'components/Matches/MatchSlider'
-import {User} from 'types/user'
-import { Match} from 'types/match'
-import { View } from 'react-native';
+import { MatchListProps, ModalInfo, ModalMode } from 'components/Matches/types'
+import { Match, Player } from 'types'
 
 
-// ✅ Tipi per la modale dinamica
-export type ModalMode = 'createMatch' | 'addGuest' | 'removeGuest' | null
 
-interface ModalInfo {
-  show: boolean
-  mode: ModalMode
-  matchId: string | null
-  modalTitle: string | null
-  handleSubmit: ((evt: React.FormEvent<HTMLFormElement>, obj: any) => void) | null
-}
-
-// ✅ Props del componente principale
-interface MatchListProps {
-  user: User
-  matches: Match[]
-  title: string
-  showAddMatch?: boolean
-}
 
 const MatchList: React.FC<MatchListProps> = ({
                                                user,
@@ -50,57 +30,41 @@ const MatchList: React.FC<MatchListProps> = ({
     handleSubmit: null,
   })
 
-  // 🟢 Gestione azioni principali
-  const handleJoin = async (matchId: string) => {
-    await handleJoinMatch({ matches, matchId, user })
-  }
-
-  const handleRemove = async (matchId: string) => {
-    await handleRemoveMatch({ matches, matchId, user })
+  const handleRemove = async (match: Match) => {
+    await handleRemoveMatch( user.userLogin?.uid ?? '', match )
   }
 
   // 🧍‍♂️ Guest: aggiunta
   const handleModalAddGuest = async (
-    evt: React.FormEvent<HTMLFormElement>,
-    obj: { matchId: string }
+    obj: Record<string, any>
   ) => {
-    evt.preventDefault()
-    const { matchId } = obj
-    const formData = new FormData(evt.currentTarget)
-    const formObject = getObjFromForm({ formData })
-    await handleJoinGuestMatch({ matches, matchId, formObject })
+    const { matchId, player } = obj
+
+    await handleJoinGuestMatch(matches, matchId, player)
     closeModal()
   }
 
   // 🚫 Guest: rimozione
-  const handleModalRemoveGuest = async (
-    evt: React.FormEvent<HTMLFormElement>,
-    obj: { matchId: string }
-  ) => {
-    evt.preventDefault()
-    const { matchId } = obj
-    const formData = new FormData(evt.currentTarget)
-    const formObject = getObjFromForm({ formData })
-    await handleRemoveGuestMatch({ matches, matchId, formObject })
+  const handleModalRemoveGuest = async (obj: Record<string, any>) => {
+    const { matchId, player } = obj
+    await handleRemoveGuestMatch(matches, matchId, player)
     closeModal()
   }
 
   // ⚽ Creazione partita
-  const handleCreateMatch = async (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-    await handleCreateMatchUtils(evt)
+  const handleCreateMatch = async (obj: Record<string, any>) => {
+    await handleCreateMatchUtils(obj)
     closeModal()
   }
 
   // 🗑️ Eliminazione partita
   const handleDeleteMatch = async (matchId: string) => {
-    await handleDeleteMatchUtils({ matches, matchId })
+    await handleDeleteMatchUtils( matches, matchId )
   }
 
   // 🪟 Apertura modale dinamica
-  const openModal = (mode: ModalMode, matchId: string | null) => {
+  const openModal = (mode: ModalMode, matchId?: string ) => {
     let options: Partial<ModalInfo> = {}
-
     switch (mode) {
       case 'createMatch':
         options = {
@@ -154,13 +118,12 @@ const MatchList: React.FC<MatchListProps> = ({
   }
 
   return (
-    <View>
+    <>
       <MatchSlider
         title={title}
         matches={matches}
         showAddMatch={showAddMatch}
         user={user}
-        handleJoin={handleJoin}
         handleRemove={handleRemove}
         openModal={openModal}
         handleModalAddGuest={handleModalAddGuest}
@@ -177,7 +140,7 @@ const MatchList: React.FC<MatchListProps> = ({
           closeModal={closeModal}
         />
       )}
-    </View>
+    </>
   )
 }
 

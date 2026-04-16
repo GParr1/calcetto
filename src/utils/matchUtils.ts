@@ -12,9 +12,11 @@ import {
 } from 'utils/firestoreUtils'
 import { DEFAULT_PHOTO } from 'utils/Constant'
 import { Timestamp } from 'firebase/firestore'
-import { Match, MatchResult, TeamBalance } from 'types/match'
+import { AnalyzeMatch, Match, MatchResult, TeamBalance } from 'types/match'
 import { User } from 'types/user'
 import { Player } from 'types/player'
+import { useSelector } from 'react-redux'
+import { getMatches } from 'state/support/selectors'
 
 export const handleSaveTeam = async (match: Match, teamBalance: TeamBalance) => {
   try {
@@ -50,15 +52,14 @@ export const handleSaveResult = async (match: Match, result: MatchResult) => {
   }
 }
 export const handleJoinMatch = async (
-  matches: Match[],
-  matchId: string,
+  match: Match,
   user: User
 ) => {
   try {
-    if (!user.customerInfo || !user.userLogin) {
+    if (!user.customerInfo || !user.userLogin || !match.id) {
       return
     }
-    const match = findInArrByUid(matches, matchId)
+
     if (!match) {
       alert(`❌ Non ho trovato la partit id: ${matchId}`)
       return
@@ -70,14 +71,12 @@ export const handleJoinMatch = async (
       )
       return
     }
-    const playerExists = findInArrByUid(
-      match.players,
-      user.userLogin.uid ?? ''
-    )
+    const playerExists = findInArrByUid(match.players, user.userLogin.uid ?? '')
     if (playerExists) {
       return alert('Sei già iscritto!')
     }
-    const {firstName, lastName, favoriteTeam, position, photoURL, overall} = user.customerInfo
+    const { firstName, lastName, favoriteTeam, position, photoURL, overall } =
+      user.customerInfo
     const updated = {
       ...match,
       players: [
@@ -85,10 +84,10 @@ export const handleJoinMatch = async (
         {
           id: user.userLogin.uid,
           firstName: firstName,
-          lastName:lastName,
+          lastName: lastName,
           favoriteTeam: favoriteTeam,
           position: position,
-          photoURL:photoURL,
+          photoURL: photoURL,
           overall: overall || 60
         }
       ]
@@ -105,34 +104,26 @@ export const handleJoinMatch = async (
   }
 }
 
-export const handleRemoveMatch = async (
-  matches: Match[],
-  matchId: string,
-  user: User
-) => {
+export const getMatchById = (matchId:string, matches: Match[]) => {
+  return findInArrByUid(matches, matchId)
+}
+
+export const handleRemoveMatch = async (uid: string, match: Match) => {
   try {
-    if (!user.userLogin) {
+    if (!uid || !match.id) {
       return
     }
-    const uid = user.userLogin.uid ?? ''
-    // // window.calcetto.toggleSpinner(true)
-    const match = findInArrByUid(matches, matchId)
-    if (!match) {
-      alert(`❌ Non ho trovato la partit id: ${matchId}`)
-      return
-    }
-    const playerExists = findInArrByUid(match.players, uid)
+    const playerExists = findInArrByUid(match?.players ?? [], uid)
     if (!playerExists) {
+      console.info('Il Giocatore non è nella lista')
       return
     }
-    const updatedPlayers = match.players.filter(
-      (p: Player) => p.id !== uid
-    )
+    const updatedPlayers = match?.players?.filter((p: Player) => p.id !== uid) ?? []
     const updated = {
       ...match,
       players: updatedPlayers
     }
-    await updateMatch(matchId, updated)
+    await updateMatch(match.id, updated)
     await getAllMatches()
     return updated
   } catch (err) {
@@ -222,7 +213,10 @@ export const handleRemoveGuestMatch = async (
     alert('❌ Errore durante la rimozione del guest.')
   }
 }
-export const handleDeleteMatchUtils = async (matches:Match[], matchId:string ) => {
+export const handleDeleteMatchUtils = async (
+  matches: Match[],
+  matchId: string
+) => {
   try {
     const match = findInArrByUid(matches, matchId)
     if (!match) {
@@ -246,18 +240,18 @@ export const handleDeleteMatchUtils = async (matches:Match[], matchId:string ) =
     // // window.calcetto.toggleSpinner(false)
   }
 }
-export const handleCreateMatchUtils = async (evt) => {
+export const handleCreateMatchUtils = async (obj: Record<string, any>) => {
   try {
-    const formData = new FormData(evt.target)
-    const formObject = getObjFromForm({ formData })
+    const { campo, data, matchId, tipo } = obj
+
     const newMatch = {
-      ...formObject,
+      campo, data, matchId, tipo,
       createdAt: new Date().toISOString(),
       // converto la stringa form.data in Timestamp
-      dataTimestamp: Timestamp.fromDate(new Date(formObject.data)),
+      dataTimestamp: Timestamp.fromDate(new Date(data)),
       players: [],
       status: 'open'
-    }
+    } as Match
     const id = await saveMatch(newMatch)
     !!id && (await getAllMatches())
   } catch (err) {
@@ -268,12 +262,40 @@ export const handleCreateMatchUtils = async (evt) => {
   }
 }
 
-export const checkMaxPlayersMatch = (match :Match) => {
+export const checkMaxPlayersMatch = (match: Match) => {
   const maxPlayers = match.tipo === '5' ? 10 : 16
-  return match.players.length < maxPlayers
+  return match?.players?.length ?? 0 < maxPlayers
 }
 // 🔹 Controlla se il numero massimo è raggiunto
-export const checkStatusMatch = (match:Match ) => {
+export const checkStatusMatch = (match: Match) => {
   const maxPlayers = match.tipo === '5' ? 10 : 16
-  return match.players.length >= maxPlayers ? 'closed' : 'open'
+  return (match?.players?.length ?? 0 >= maxPlayers) ? 'closed' : 'open'
+}
+
+export const buildDataPrediction = (
+  prediction: AnalyzeMatch,
+  team: 'teamA' | 'teamB'
+) => {
+  const { goals, passAccuracy, shots } = prediction
+  const key = team === 'teamA' ? 'A' : 'B'
+  return {
+    name: `Squadra ${key}`,
+    att: [
+      {
+        key: `goal-${key}`,
+        label: 'Goal: ',
+        value: goals[team]
+      },
+      {
+        key: `pass-${key}`,
+        label: 'Passaggi: ',
+        value: `${passAccuracy[team]}%`
+      },
+      {
+        key: `shots-${key}`,
+        label: 'Tiri: ',
+        value: shots[team]
+      }
+    ]
+  }
 }

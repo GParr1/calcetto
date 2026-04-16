@@ -2,6 +2,7 @@ import { ViewProps, AccessibilityRole } from 'react-native'
 import {
   BorderStyle,
   COLORS,
+  DisplayContainer,
   FlexAlignContent,
   FlexAlignItems,
   FlexDirection,
@@ -11,9 +12,8 @@ import {
   SizesRem,
   SizeUnits
 } from 'components/core/Container/enum'
+import { Responsive, ResponsiveProp } from 'components/core/utils'
 
-export type Responsive<X> = { [key: string]: X }
-export type ResponsiveProp<X> = X | Responsive<X> | X[]
 
 export interface FlexComponentProps {
   flexDirection?: ResponsiveProp<FlexDirection>
@@ -30,13 +30,15 @@ export interface ViewportComponentProps {
   height?: ResponsiveProp<number | string | SizeUnits>
   minHeight?: ResponsiveProp<number | string | SizeUnits>
   maxHeight?: ResponsiveProp<number | string | SizeUnits>
+  maxWidth?: ResponsiveProp<number | string | SizeUnits>
+  minWidth?: ResponsiveProp<number | string | SizeUnits>
   width?: ResponsiveProp<number | string | SizeUnits>
 }
 export interface BorderComponentProps {
   border?: ResponsiveProp<BorderStyle>
   borderSize?: number
   borderRadius?: number
-  borderColor?: string
+  borderColor?: COLORS | string
 }
 export interface PositionComponentProps {
   position?: ResponsiveProp<'absolute' | 'relative' | 'fixed'>
@@ -45,14 +47,18 @@ export interface PositionComponentProps {
   right?: ResponsiveProp<number | SizesPx | SizesRem>
   bottom?: ResponsiveProp<number | SizesPx | SizesRem>
 }
+export interface DisplayProps {
+  display?: ResponsiveProp<DisplayContainer>
+}
 export interface ContainerProps
   extends ViewProps,
     PositionComponentProps,
     BorderComponentProps,
     ViewportComponentProps,
-    FlexComponentProps {
+    FlexComponentProps,
+    DisplayProps {
   padding?: ResponsiveProp<number | SizesPx | SizesRem>
-  overflow?: ResponsiveProp<'visible' | 'hidden' | 'scroll'>
+  overflow?: ResponsiveProp<'visible' | 'hidden' | 'scroll' | string>
   backgroundColor?: ResponsiveProp<string | COLORS>
   boxShadow?: ResponsiveProp<string>
 
@@ -60,6 +66,7 @@ export interface ContainerProps
   scale?: number
   scaleX?: number
   scaleY?: number
+
 
   // React Native friendly
   onPress?: () => void

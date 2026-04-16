@@ -6,7 +6,11 @@ import { useResponsiveStyle } from 'styles/styles.utils';
 import { ContainerProps } from 'styles';
 import ModalInfo from 'components/Modal/ModalInfo';
 import { Container } from 'components/core/Container/Container'
-import { FlexAlignItems, FlexDirection } from 'components/core/Container/enum'
+import {
+  FlexAlignItems,
+  FlexDirection,
+  SizesPx
+} from 'components/core/Container/enum'
 
 interface AuthViewProps {
   register?: boolean
@@ -25,9 +29,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ register = false }) => {
 
   const responsiveMainContainer = {
     flexDirection: FlexDirection.COLUMN,
-    flexGap:24,
+    flexGap: SizesPx.XL,
     flexAlignItems: FlexAlignItems.CENTER,
-    width: '100%'
+    width: '70vw'
   }
   const modalProps = {
     title: error ? "Errore" : '',

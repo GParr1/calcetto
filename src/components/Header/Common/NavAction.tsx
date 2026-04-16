@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container } from 'components/core/Container/Container'
 import {
+  DisplayContainer,
   FlexAlignItems,
   FlexDirection,
   FlexJustifyContent,
@@ -14,11 +15,21 @@ import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 import { doSignOut } from 'utils/authUtils'
 import { COLORS } from 'components/constantStyle'
 
-const NavAction: React.FC = () => {
+interface NavActionProps {
+  isMobile?: boolean
+}
+const NavAction: React.FC<NavActionProps> = ({ isMobile = false }) => {
   const containerConfig = {
+    display: isMobile
+      ? DisplayContainer.FLEX
+      : {
+          mobile: DisplayContainer.NONE,
+          tablet: DisplayContainer.FLEX,
+          desktop: DisplayContainer.FLEX
+        },
     flexDirection: FlexDirection.ROW,
     flexJustifyContent: FlexJustifyContent.FLEX_END,
-    flex: 1,
+    ...(!isMobile && { flex: 1 }),
     alignItems: ContainerProps.alignCenter,
     flexGap: SizesPx.S
   }
