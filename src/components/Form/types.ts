@@ -1,22 +1,21 @@
-import React, { FormEvent } from 'react';
-import { DoFirebaseLoginParms } from 'utils/authUtils'
+import { FormStructure } from 'types/form'
 
 export type FormId =
   | 'formUser'
-  | 'email-step'
+  | 'emailStep'
   | 'resetPassword'
-  | 'password-step'
-  | 'resetPassword-step-password'
-  | 'register-step-1'
-  | 'register-step-2'
+  | 'passwordStep'
+  | 'resetPasswordStepPassword'
+  | 'registerStep1'
+  | 'registerStep2'
   | 'createMatch'
   | 'addGuest'
   | 'removeGuest'
 
 export interface GeneralFormProps {
-  handleSubmit?: (obj: Record<string, any>) => void
+  handleSubmit?: null | ((obj: Record<string, any>) => void)
   handleChangeInput?: (obj: Record<string, any>) => void
-  formId: FormId
+  formData: FormStructure
   obj?: Record<string, any>
   labels?: {
     submitLabel?: string
@@ -25,16 +24,11 @@ export interface GeneralFormProps {
 export interface FieldsFormStructure {
   type: string,
   name: string,
-  label: string,
-  placeholder: string,
-  defaultValue?: string,
+  label?: string,
+  placeholder?: string,
+  defaultValue?: string | number,
   options?: Array<any>
   required?:boolean,
-  pattern?:string
+  pattern?:RegExp
 
-}
-export interface FormStructure {
-  id:string,
-  fields: Array<FieldsFormStructure>
-  [key: string]: any
 }

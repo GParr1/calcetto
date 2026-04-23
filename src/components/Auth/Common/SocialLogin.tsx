@@ -1,6 +1,6 @@
 import React from 'react'
 import { btnSecondaryDefault, ContainerProps, sizes, UITextProps } from 'styles';
-import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button';
+import Button from 'components/core/Button/Button';
 import { Container } from 'components/core/Container/Container'
 import {
   FlexAlignItems,
@@ -10,6 +10,8 @@ import {
   SizeUnits
 } from 'components/core/Container/enum'
 import { COLORS } from 'components/constantStyle'
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
 
 interface SocialLoginProps {
   handleLogin: (obj: { action: string }) => Promise<void>

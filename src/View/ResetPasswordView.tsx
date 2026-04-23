@@ -10,9 +10,11 @@ import {
 } from 'components/core/Container/enum'
 import HeaderAuthView from 'components/Auth/Common/HeaderAuthView'
 import { COLORS } from 'components/constantStyle'
-import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button'
+import Button from 'components/core/Button/Button'
 import { useNavigate } from 'react-router-dom'
 import { LoginLabelsProps } from 'properties/authView'
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
 
 // ✅ Tipizzazione del componente
 const ResetPasswordView: React.FC = () => {

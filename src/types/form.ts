@@ -1,3 +1,4 @@
+import { FieldsFormStructure } from 'components/Form/types'
 
 /** Tipi di formId */
 export type FormId =
@@ -28,8 +29,9 @@ export interface FormField {
 
 /** Struttura generica di un form */
 export interface FormStructure {
-  fields: Array<any>
-  [key: string]: any
+  id: string
+  fields: Array<FieldsFormStructure>
+  submitLabel: string
 }
 
 /** Oggetto generico di un form */

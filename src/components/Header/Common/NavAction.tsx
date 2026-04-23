@@ -8,12 +8,12 @@ import {
   SizesPx,
   SizesRem
 } from 'components/core/Container/enum'
-import { borderRadiusSizes, btnNavLinkDefault, ContainerProps } from 'styles'
-import Button, { ButtonType, IoniconsNames } from 'components/core/Button'
-import { StyleProp } from 'react-native'
-import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
+import { borderRadiusSizes, ContainerProps } from 'styles'
+import Button from 'components/core/Button/Button'
 import { doSignOut } from 'utils/authUtils'
 import { COLORS } from 'components/constantStyle'
+import { ButtonType } from 'components/core/Button/enum'
+import { IoniconsNames } from 'components/core/Button/types'
 
 interface NavActionProps {
   isMobile?: boolean

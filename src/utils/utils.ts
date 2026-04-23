@@ -79,25 +79,6 @@ export const manageFirstLogin = (): string => {
 /* ------------------- Form ------------------- */
 
 /**
- * Restituisce la struttura di un form dato il suo id
- */
-export const getFormStructure = (formId: FormId): FormStructure => {
-  switch (formId) {
-    case 'formUser': return FORMUSER
-    case 'email-step':
-    case 'resetPassword': return FORM_EMAIL_STEP
-    case 'password-step':
-    case 'resetPassword-step-password': return FORM_PASSWORD_STEP
-    case 'register-step-1': return FORM_REGISTER_STEP_1
-    case 'register-step-2': return FORM_REGISTER_STEP_2
-    case 'createMatch': return FORM_CREATE_MATCH
-    case 'addGuest': return FORM_ADD_GUEST
-    case 'removeGuest': return FORM_REMOVE_GUEST
-    default: return { fields: [] }
-  }
-}
-
-/**
  * Converte FormData in oggetto e gestisce la data di nascita
  */
 const manageBirthDateDay = ({ formObject }: { formObject: FormObject }): void => {
@@ -173,7 +154,16 @@ export const analyzeMatch = (
   teamA: Player[],
   teamB: Player[]
 ): AnalyzeMatch | null => {
-  if (!teamA.length || !teamB.length) return null
+  if (!teamA.length || !teamB.length) {
+    return {
+      possession: { teamA: 0, teamB: 0 },
+      passAccuracy: { teamA: 0, teamB: 0 },
+      shots: { teamA: 0, teamB: 0 },
+      shotsOnTarget: { teamA: 0, teamB: 0 },
+      goals: { teamA: 0, teamB: 0 },
+      winner: "N/A"
+    }
+  }
 
   const avgA =
     teamA.reduce((s, x) => s + Number(x.overall), 0) / teamA.length
@@ -252,7 +242,18 @@ export const findInArrByCriteria = (arr: Player[], criteria: Partial<Player>): P
  */
 export const filterInArrByCriteria = (arr: Player[], criteria: Partial<Player>): Player[] =>
   arr.filter(p => Object.keys(criteria).every(key => p[key as keyof Player] === criteria[key as keyof Player]))
-
+/**
+* Rimuove i giocatori in base a criteri
+*/
+export const removeFromArrByCriteria = (
+  arr: Player[],
+  criteria: Partial<Player>
+): Player[] =>
+  arr.filter(p =>
+    !Object.keys(criteria).every(
+      key => p[key as keyof Player] === criteria[key as keyof Player]
+    )
+  );
 /**
  * Genera due squadre bilanciate in base all'overall
  */

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useResponsiveStyle } from 'styles/styles.utils';
-import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button';
+import Button from 'components/core/Button/Button';
 import { borderRadiusSizes, btnDefault, btnSecondaryDefault, ContainerProps, textDefault } from 'styles';
 import HeaderAuthView from 'components/Auth/Common/HeaderAuthView';
 import SocialLogin from 'components/Auth/Common/SocialLogin';
@@ -13,6 +13,9 @@ import { maskEmail } from 'utils/utils';
 import { COLORS } from 'components/constantStyle';
 import Login from 'components/Auth/Login/Login'
 import { LoginLabelsProps } from 'properties/authView'
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
+import { FORM_PASSWORD_STEP, FromType } from 'structure/formUser'
 
 interface LoginStepPasswordProps {
   handleBack: () =>  void
@@ -59,13 +62,15 @@ const LoginStepPassword: React.FC<LoginStepPasswordProps> = ({ handleBack, email
   return (
     <>
       {/* Pulsante Indietro */}
-      <Button {...btnBackConfig}/>
+      <Button {...btnBackConfig} />
       {/* 🧭 Header */}
-      <HeaderAuthView {...headerAuthViewProps}/>
-      <View style={{...responsiveFormContainer}}>
-        <Text style={{textAlign: 'center'}}>Inserisci la password di {maskEmail(email)}</Text>
+      <HeaderAuthView {...headerAuthViewProps} />
+      <View style={{ ...responsiveFormContainer }}>
+        <Text style={{ textAlign: 'center' }}>
+          Inserisci la password di {maskEmail(email)}
+        </Text>
         <GeneralForm
-          formId="password-step"
+          formData={FromType.passwordStep}
           handleSubmit={handleLogin}
           labels={{ submitLabel: 'ACCEDI' }}
           obj={{ action: 'email', email }}

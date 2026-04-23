@@ -1,5 +1,9 @@
+export type ModalMode = 'createMatch' | 'addGuest' | 'removeGuest'
+
 export interface ModalInfo {
-  modalTitle: string
-  mode: string
-  handleSubmit: (evt: React.FormEvent<HTMLFormElement>, obj?: any) => void
+  show: boolean
+  mode: ModalMode | null
+  matchId?: string | null
+  modalTitle: string | null
+  handleSubmit: null | ((obj: Record<string, any>) => void)
 }

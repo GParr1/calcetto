@@ -1,8 +1,7 @@
 import {
-  filterInArrByCriteria,
   findInArrByCriteria,
   findInArrByUid,
-  getObjFromForm
+  removeFromArrByCriteria
 } from 'utils/utils'
 import {
   deleteMatch,
@@ -10,13 +9,10 @@ import {
   saveMatch,
   updateMatch
 } from 'utils/firestoreUtils'
-import { DEFAULT_PHOTO } from 'utils/Constant'
 import { Timestamp } from 'firebase/firestore'
 import { AnalyzeMatch, Match, MatchResult, TeamBalance } from 'types/match'
 import { User } from 'types/user'
 import { Player } from 'types/player'
-import { useSelector } from 'react-redux'
-import { getMatches } from 'state/support/selectors'
 
 export const handleSaveTeam = async (match: Match, teamBalance: TeamBalance) => {
   try {
@@ -51,56 +47,58 @@ export const handleSaveResult = async (match: Match, result: MatchResult) => {
     // // window.calcetto.toggleSpinner(false)
   }
 }
-export const handleJoinMatch = async (
-  match: Match,
-  user: User
-) => {
+export const handleJoinMatch = async (match: Match, userAuth: User) => {
   try {
-    if (!user.customerInfo || !user.userLogin || !match.id) {
+    const { id, tipo, players } = match
+    const { user, customerInfo } = userAuth
+    if (!customerInfo || !user || !id) {
       return
     }
 
     if (!match) {
-      alert(`❌ Non ho trovato la partit id: ${matchId}`)
+      alert(`❌ Non ho trovato la partit id: ${id}`)
       return
     }
     const isMaxPlayersMatch = checkMaxPlayersMatch(match)
     if (!isMaxPlayersMatch) {
       alert(
-        `❌ Hai già raggiunto il numero massimo di giocatori per il calcio a ${match.tipo}.`
+        `❌ Hai già raggiunto il numero massimo di giocatori per il calcio a ${tipo}.`
       )
       return
     }
-    const playerExists = findInArrByUid(match.players, user.userLogin.uid ?? '')
+    const playerExists = findInArrByUid(players ?? [], user.uid)
     if (playerExists) {
       return alert('Sei già iscritto!')
     }
     const { firstName, lastName, favoriteTeam, position, photoURL, overall } =
-      user.customerInfo
+      customerInfo
+    const matchPlayers = match?.players ?? ([] as Player[])
+
+    const newPlayer = {
+      id: user.uid,
+      name: `${firstName} ${lastName} tt`,
+      firstName,
+      lastName,
+      favoriteTeam,
+      position,
+      ...(photoURL && {photoURL}),
+      //photoURL: photoURL,
+      overall: overall ?? 60,
+      isGuest: false
+    }
     const updated = {
       ...match,
-      players: [
-        ...match.players,
-        {
-          id: user.userLogin.uid,
-          firstName: firstName,
-          lastName: lastName,
-          favoriteTeam: favoriteTeam,
-          position: position,
-          photoURL: photoURL,
-          overall: overall || 60
-        }
-      ]
+      players: [...matchPlayers, newPlayer]
     }
-    await updateMatch(matchId, updated)
+
+    await updateMatch(match.id, updated)
+
     await getAllMatches()
-    // // window.calcetto.toggleSpinner(false)
     return updated
   } catch (err) {
     console.error('Errore aggiunta:', err)
     alert('❌ Errore durante l’iscrizione.')
   } finally {
-    // // window.calcetto.toggleSpinner(false)
   }
 }
 
@@ -159,10 +157,8 @@ export const handleJoinGuestMatch = async (
     const nextIdNumber =
       guestNumbers.length > 0 ? Math.max(...guestNumbers) + 1 : 1
     const newGuest = {
+      ...formObject,
       id: `guest-${nextIdNumber}`,
-      firstName: formObject.guestName,
-      photoURL: DEFAULT_PHOTO,
-      overall: parseInt(formObject.guestOverall, 10),
       isGuest: true
     }
 
@@ -191,21 +187,21 @@ export const handleRemoveGuestMatch = async (
       alert(`❌ Non ho trovato la partit id: ${matchId}`)
       return
     }
-    const { guestName } = formObject
-    const criteria = { name: guestName, isGuest: true }
+    const { id, name } = formObject
+    const criteria = { id }
     const guest = findInArrByCriteria(match.players, criteria)
     if (!guest) {
-      alert(`❌ Nessun guest con il nome "${guestName}" trovato.`)
+      alert(`❌ Nessun guest con il nome "${name}" trovato.`)
       return
     }
 
-    const updatedPlayers = filterInArrByCriteria(match.players, criteria)
+    const updatedPlayers = removeFromArrByCriteria(match.players, criteria)
     const updated = {
       ...match,
       players: updatedPlayers
     }
     await updateMatch(matchId, updated)
-    alert(`✅ Guest "${guestName}" rimosso con successo.`)
+    alert(`✅ Guest "${name}" rimosso con successo.`)
     await getAllMatches()
     return updated
   } catch (err) {
@@ -245,13 +241,14 @@ export const handleCreateMatchUtils = async (obj: Record<string, any>) => {
     const { campo, data, matchId, tipo } = obj
 
     const newMatch = {
+      ...obj,
       campo, data, matchId, tipo,
       createdAt: new Date().toISOString(),
       // converto la stringa form.data in Timestamp
       dataTimestamp: Timestamp.fromDate(new Date(data)),
       players: [],
       status: 'open'
-    } as Match
+    }
     const id = await saveMatch(newMatch)
     !!id && (await getAllMatches())
   } catch (err) {
@@ -264,12 +261,12 @@ export const handleCreateMatchUtils = async (obj: Record<string, any>) => {
 
 export const checkMaxPlayersMatch = (match: Match) => {
   const maxPlayers = match.tipo === '5' ? 10 : 16
-  return match?.players?.length ?? 0 < maxPlayers
+  return (match?.players?.length ?? 0) < maxPlayers
 }
 // 🔹 Controlla se il numero massimo è raggiunto
 export const checkStatusMatch = (match: Match) => {
   const maxPlayers = match.tipo === '5' ? 10 : 16
-  return (match?.players?.length ?? 0 >= maxPlayers) ? 'closed' : 'open'
+  return ((match?.players?.length ?? 0 )>= maxPlayers) ? 'closed' : 'open'
 }
 
 export const buildDataPrediction = (

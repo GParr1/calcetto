@@ -15,6 +15,11 @@ import {
   SizesRem,
   SizeUnits
 } from 'components/core/Container/enum'
+import {
+  FORM_EMAIL_STEP,
+  FORM_PASSWORD_STEP,
+  FromType
+} from 'structure/formUser'
 
 const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams()
@@ -76,7 +81,7 @@ const ResetPassword: React.FC = () => {
     <Container {...container}>
       {!oobCode && (
         <GeneralForm
-          formId="resetPassword"
+          formData={FromType.emailStep}
           handleSubmit={handleResetPassword}
           obj={{}}
         />
@@ -84,13 +89,12 @@ const ResetPassword: React.FC = () => {
 
       {oobCode && (
         <GeneralForm
-          formId="resetPassword-step-password"
+          formData={FromType.passwordStep}
           handleSubmit={handleConfirmPasswordReset}
           obj={{}}
         />
       )}
-      {(error || success) &&
-        <ModalInfo {...modalProps} />}
+      {(error || success) && <ModalInfo {...modalProps} />}
     </Container>
   )
 }

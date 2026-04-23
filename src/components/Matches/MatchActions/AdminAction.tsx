@@ -1,30 +1,78 @@
 import React, { FC, useState } from 'react'
 import { COLORS, FlexDirection, SizesPx } from 'components/core/Container/enum'
 import { Container } from 'components/core/Container/Container'
-import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button'
+import Button from 'components/core/Button/Button'
 import { Text, TextInput } from 'react-native'
 import { btnSecondaryDefault, UITextProps } from 'styles'
-import { checkMaxPlayersMatch, handleSaveResult } from 'utils/matchUtils'
+import {
+  checkMaxPlayersMatch,
+  handleCreateMatchUtils,
+  handleDeleteMatchUtils,
+  handleJoinGuestMatch,
+  handleSaveResult
+} from 'utils/matchUtils'
 import { AdminActionProps } from './types'
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
+import { useSelector } from 'react-redux'
+import { getMatches } from 'state/support/selectors'
+import { Match } from 'types/match'
+import PlayerModal from 'components/Modal/PlayerModal'
+import ModalForm from 'components/Modal/ModalForm'
+import { openModal } from 'components/Matches/utils'
+import {  Player } from 'types/player'
+import { ModalInfo } from 'types/molal'
 
 const AdminAction: FC<AdminActionProps> = (props) => {
+  const matches = useSelector(getMatches) as Match[] // 👈 forza il tipo
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [modalInfo, setModalInfo] = useState<ModalInfo>({
+    show: false,
+    mode: null,
+    matchId: null,
+    modalTitle: null,
+    handleSubmit: null
+  })
+  const { match, isPast, playerExists } = props
+  const {players} = match
+
   const [goalsA, setGoalsA] = useState<string>('')
   const [goalsB, setGoalsB] = useState<string>('')
-
-  const { match, isPast, playerExists, openModal } = props
   const isMaxPlayers = checkMaxPlayersMatch(match)
+
   const handleSubmitResult = async () => {
     if (goalsA === '' || goalsB === '') return alert('Inserisci entrambi i gol')
     const result = { goalsA: Number(goalsA), goalsB: Number(goalsB) }
     await handleSaveResult(match, result)
   }
 
+  const handleModalAddGuest = async (obj: Record<string, any>) => {
+    const { matchId, guestName, guestOverall } = obj
+    const player = {
+      name: guestName,
+      overall: parseInt(guestOverall, 10)
+    } as Player
+    await handleJoinGuestMatch(matches, matchId, player)
+    closeModal()
+  }
+
+  const closeModal = () => {
+    setModalInfo({
+      show: false,
+      mode: null,
+      matchId: null,
+      modalTitle: null,
+      handleSubmit: null
+    })
+  }
+
 
   const btnAddGuestMatchConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
-      onPress: async () => openModal('addGuest', match.id),
-      disabled: isMaxPlayers,
+      onPress: () =>
+        setModalInfo(openModal('addGuest', match.id, handleModalAddGuest)),
+      disabled: !isMaxPlayers,
       accessibilityLabel: 'Add Guest',
       style: {
         ...btnSecondaryDefault,
@@ -35,7 +83,6 @@ const AdminAction: FC<AdminActionProps> = (props) => {
       }
     },
     ioniconsConfig: {
-      //"add" | "add-circle" | "add-circle-outline" | "add-circle-sharp" | "add-outline" | "add-sharp
       name: 'add-circle-sharp' as IoniconsNames,
       size: 20,
       color: '#fff'
@@ -46,8 +93,7 @@ const AdminAction: FC<AdminActionProps> = (props) => {
   const btnRemoveGuestMatchConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
-      onPress: async () => openModal('removeGuest', match.id),
-      disabled: !playerExists,
+      onPress: () => setModalVisible(!modalVisible),
       accessibilityLabel: 'Remove Guest',
       style: {
         ...btnSecondaryDefault,
@@ -58,8 +104,6 @@ const AdminAction: FC<AdminActionProps> = (props) => {
       }
     },
     ioniconsConfig: {
-      //| "bag-remove" | "bag-remove-outline" | "bag-remove-sharp" | "bag-sharp"
-      // "add" | "add-circle" | "add-circle-outline" | "add-circle-sharp" | "add-outline" | "add-sharp
       name: 'person-remove-outline' as IoniconsNames,
       size: 20,
       color: '#fff'
@@ -69,8 +113,10 @@ const AdminAction: FC<AdminActionProps> = (props) => {
   const btnRemoveMatchConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
-      onPress: async () => console.log('handleDeleteMatch(id)'),
-      disabled: !playerExists,
+      onPress: async () => {
+        console.log("pippo")
+        await handleDeleteMatchUtils(matches,match.id)
+      },
       accessibilityLabel: 'Remove Match',
       style: {
         ...btnSecondaryDefault,
@@ -81,8 +127,6 @@ const AdminAction: FC<AdminActionProps> = (props) => {
       }
     },
     ioniconsConfig: {
-      //| "bag-remove" | "bag-remove-outline" | "bag-remove-sharp" | "bag-sharp"
-      // "add" | "add-circle" | "add-circle-outline" | "add-circle-sharp" | "add-outline" | "add-sharp
       name: 'ban-outline' as IoniconsNames,
       size: 20,
       color: '#fff'
@@ -113,7 +157,7 @@ const AdminAction: FC<AdminActionProps> = (props) => {
   return (
     <Container>
       <Container {...containerConfig}>
-        <Button {...btnAddGuestMatchConfig} />
+        {isMaxPlayers && <Button {...btnAddGuestMatchConfig} />}
         <Button {...btnRemoveGuestMatchConfig} />
         <Button {...btnRemoveMatchConfig} />
       </Container>
@@ -153,6 +197,22 @@ const AdminAction: FC<AdminActionProps> = (props) => {
           </Container>
           <Button {...btnSaveResultConfig} />
         </Container>
+      )}
+      {modalVisible && (
+        <PlayerModal
+          players={players ?? []}
+          closeModal={() => setModalVisible(!modalVisible)}
+          modalTitle={'Rimuovi giocatori'}
+          matchId={match.id}
+        />
+      )}
+      {/* 🟡 Modale dinamica */}
+      {modalInfo.show && (
+        <ModalForm
+          modalInfo={modalInfo}
+          objSubmit={{ matchId: modalInfo.matchId }}
+          closeModal={closeModal}
+        />
       )}
     </Container>
   )

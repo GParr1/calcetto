@@ -147,7 +147,7 @@ const CardBronze: FC<CardBronzeProps> = ({
       top: ['21.5%'],
       left: ['14.2%'],
       fontSize: [40 * scale],
-      width: ['11.65%'],
+      width: ['13.65%'],
       fontWeight: ['500']
     })
   }

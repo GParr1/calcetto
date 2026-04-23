@@ -22,6 +22,6 @@ export interface CustomerInfo {
 }
 
 export interface User {
-  userLogin?: UserLogin
+  user?: UserLogin
   customerInfo?: CustomerInfo
 }

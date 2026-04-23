@@ -3,9 +3,6 @@ import { handleSaveFormUser } from 'utils/authUtils'
 import CardBronze from 'components/FifaCard/CardBronze'
 import { useNavigate } from 'react-router-dom'
 import GeneralForm from 'components/Form/GeneralForm'
-import { View, Text } from 'react-native';
-import { ContainerProps } from 'styles';
-import { useResponsiveStyle } from 'styles/styles.utils';
 import { COLORS } from 'components/constantStyle';
 import { CustomerInfo } from 'types/user';
 import ImageModal from 'components/FifaCard/ImageModal';
@@ -20,6 +17,7 @@ import {
   SizesPx
 } from 'components/core/Container/enum'
 import NativeText from 'components/core/NativeText'
+import { FORMUSER, FromType } from 'structure/formUser'
 
 /**
  * Tipizzazione parziale per l'oggetto utente.
@@ -149,7 +147,7 @@ export const ConfirmProfileView: React.FC<ConfirmProfileViewProps> = ({ user }) 
               {'Completa il tuo profilo'}
             </NativeText>
             <GeneralForm
-              formId="formUser"
+              formData={FromType.formUser}
               handleChangeInput={handleChange}
               handleSubmit={handleSubmit}
               labels={{ submitLabel: 'SALVA' }}

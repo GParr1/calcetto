@@ -6,7 +6,8 @@ import { Text, View } from 'react-native';
 import GeneralForm from 'components/Form/GeneralForm';
 import Link from 'components/core/Link';
 import { useResponsiveStyle } from 'styles/styles.utils';
-import { TextAlign, textDefault } from 'styles';
+import { TextAlign, textDefault } from 'styles'
+import { FORM_REGISTER_STEP_1, FromType } from 'structure/formUser'
 
 interface RegisterStepUserInfoProps {
   handleFirstStep: (obj: Record<string, any>) =>  void
@@ -45,18 +46,18 @@ const RegisterStepUserInfo: React.FC<RegisterStepUserInfoProps> = ({ handleFirst
       textAlign: TextAlign.CENTER,
     }
   }
-  return(
+  return (
     <>
       <HeaderAuthView {...headerAuthViewProps} />
       <SocialLogin {...socialLoginProps} />
       <DividerLogin />
-      <View style={{...responsiveFormContainer}}>
+      <View style={{ ...responsiveFormContainer }}>
         <GeneralForm
-          formId="register-step-1"
+          formData={FromType.registerStep1}
           handleSubmit={handleFirstStep}
           obj={{}}
         />
-        <Text {...testConfigProps}/>
+        <Text {...testConfigProps} />
       </View>
     </>
   )

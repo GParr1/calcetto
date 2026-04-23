@@ -1,7 +1,8 @@
 import { teamLogo } from './teamLogo'
 import { teamPosition } from './teamPosition'
-import { ButtonType } from 'components/core/Button';
 import { btnPrimaryDefault } from 'styles';
+import { ButtonType } from 'components/core/Button/enum'
+import { FormStructure } from 'types/form'
 
 const submitBtn = {
   type: 'button',
@@ -54,7 +55,7 @@ const lastNameInput = {
   defaultValue: ''
 }
 
-export const FORMUSER = {
+export const FORMUSER: FormStructure = {
   id: 'userForm',
   fields: [
     { ...firstNameInput },
@@ -88,12 +89,13 @@ export const FORMUSER = {
     {
       type: 'hidden',
       name: 'isNewUser',
-      value: true
+      defaultValue: 'true'
     },
-    { ...submitBtn, label: 'Registrati' }
-  ]
+
+  ],
+  submitLabel: 'Registrati'
 }
-export const FORM_REGISTER_STEP_1 = {
+export const FORM_REGISTER_STEP_1: FormStructure = {
   id: 'register-step-1',
   fields: [
     { ...firstNameInput },
@@ -106,11 +108,11 @@ export const FORM_REGISTER_STEP_1 = {
       placeholder: '',
       defaultValue: ''
     },
-    { ...submitBtn, label: 'Avanti' }
-  ]
+  ],
+  submitLabel: 'Avanti'
 }
 
-export const FORM_REGISTER_STEP_2 = {
+export const FORM_REGISTER_STEP_2: FormStructure = {
   id: 'register-step-2',
   fields: [
     { ...emailInput },
@@ -130,26 +132,28 @@ export const FORM_REGISTER_STEP_2 = {
           label: 'Acconsento al marketing e comunicazioni promozionali'
         }
       ],
-      defaultValue: ['privacy'] // Se l'utente ha già dato il consenso per la privacy di default
+      defaultValue: 'privacy' // Se l'utente ha già dato il consenso per la privacy di default
     },
     {
       type: 'hidden',
       name: 'isNewUser',
-      value: true
-    },
-    { ...submitBtn, label: 'Registrati' }
-  ]
+      defaultValue: 'true'
+    }
+  ],
+  submitLabel: 'Registrati'
 }
-export const FORM_EMAIL_STEP = {
+export const FORM_EMAIL_STEP: FormStructure = {
   id: 'email-step',
-  fields: [{ ...emailInput }, { ...submitBtn, label: 'Reset Password' }]
+  fields: [{ ...emailInput }],
+  submitLabel: 'Reset Password'
 }
-export const FORM_PASSWORD_STEP = {
+export const FORM_PASSWORD_STEP: FormStructure = {
   id: 'password-step',
-  fields: [{ ...passwordInput }, { ...submitBtn, label: 'Reset Password' }]
+  fields: [{ ...passwordInput }],
+  submitLabel: 'Reset Password'
 }
 
-export const FORM_ADD_GUEST = {
+export const FORM_ADD_GUEST: FormStructure = {
   id: 'addGuest',
   fields: [
     {
@@ -166,10 +170,10 @@ export const FORM_ADD_GUEST = {
       placeholder: 'Overall',
       defaultValue: ''
     },
-    { ...submitBtn, className: 'btn btn-primary', label: 'Aggiungi' }
-  ]
+  ],
+  submitLabel: 'Aggiungi'
 }
-export const FORM_CREATE_MATCH = {
+export const FORM_CREATE_MATCH: FormStructure = {
   id: 'createMatch',
   fields: [
     {
@@ -178,8 +182,7 @@ export const FORM_CREATE_MATCH = {
       label: 'Campo',
       placeholder: 'Nome del campo',
       defaultValue: '',
-      required: true,
-      className: 'form-control'
+      required: true
     },
     {
       type: 'date',
@@ -197,15 +200,14 @@ export const FORM_CREATE_MATCH = {
         { value: '5', label: 'Calcio a 5' },
         { value: '8', label: 'Calcio a 8' }
       ],
-      defaultValue: '5',
-      className: 'form-select',
+      defaultValue: 0,
       required: true
     },
-    { ...submitBtn, label: 'Crea partita' }
-  ]
+  ],
+  submitLabel: 'Crea Partita'
 }
 
-export const FORM_REMOVE_GUEST = {
+export const FORM_REMOVE_GUEST: FormStructure = {
   id: 'addGuest',
   fields: [
     {
@@ -215,5 +217,19 @@ export const FORM_REMOVE_GUEST = {
       placeholder: 'Nome guest',
       defaultValue: ''
     }
-  ]
+  ],
+  submitLabel: 'Rimuovi Guest'
+}
+
+export const FromType =  {
+  formUser: FORMUSER,
+  emailStep: FORM_EMAIL_STEP,
+    resetPassword: FORM_EMAIL_STEP,
+  passwordStep: FORM_PASSWORD_STEP,
+ resetPasswordStepPassword: FORM_PASSWORD_STEP,
+ registerStep1: FORM_REGISTER_STEP_1,
+ registerStep2: FORM_REGISTER_STEP_2,
+  createMatch: FORM_CREATE_MATCH,
+  addGuest: FORM_ADD_GUEST,
+  removeGuest: FORM_REMOVE_GUEST,
 }

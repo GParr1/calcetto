@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from 'components/core/Button'
+import Button from 'components/core/Button/Button'
 
 interface MobileActionProps {
   openMenu: () => void

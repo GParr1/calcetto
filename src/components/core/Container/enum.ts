@@ -46,7 +46,8 @@ export enum FlexWrap {
 export enum SizeUnits {
   FULL = '100%', // 100% width/height
   VIEW_HEIGHT = '100vh', // full viewport height
-  VIEW_WIDTH = '100vw' // full viewport width
+  VIEW_WIDTH = '100vw', // full viewport width
+  _8 = '80%'
 }
 
 // Enum per i type of bord

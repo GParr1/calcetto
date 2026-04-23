@@ -2,20 +2,21 @@ import { Match } from 'types/match';
 import React, { FC, useState } from 'react';
 import { findInArrByUid } from 'utils/utils';
 import { Text } from 'react-native';
-import MatchActions from 'components/Matches/MatchActions';
+import MatchActions from 'components/Matches/MatchActions/MatchActions';
 import { Container } from 'components/core/Container/Container'
 import { BorderStyle, COLORS, SizesPx } from 'components/core/Container/enum'
 import { Accordion } from 'components/core/Accordion/Accordion'
-import {  IoniconsNames } from 'components/core/Button'
-import { btnSecondaryDefault, UITextProps } from 'styles'
+import { btnSecondaryDefault } from 'styles'
 import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
 import MatchDetail from 'components/Matches/MatchDetail/MatchDetail'
 import { Ionicons } from '@expo/vector-icons'
 import MatchContent from 'components/Matches/MatchContent'
 import { DetailOverlay, MatchCardProps } from 'components/Matches/types'
+import { IoniconsNames } from 'components/core/Button/types'
 
 
-const MatchCard : FC<MatchCardProps> = ( {match, uid, user, openModal}) => {
+const MatchCard : FC<MatchCardProps> = ( {match, uid}) => {
+
   const {campo, data, tipo, players} = match
   const playerExists = findInArrByUid(players ?? [], uid)
   const [detailOverlay, setDetailOverlay] = useState<DetailOverlay>({
@@ -70,13 +71,11 @@ const MatchCard : FC<MatchCardProps> = ( {match, uid, user, openModal}) => {
         style={{
           ...btnSecondaryDefault,
           width: 'auto',
-          textTransform: 'capitalize',
-          fontWeight: '400',
           gap: 8
         }}
       >
         <Ionicons {...ioniconsDetailsConfig} />
-        <Text>Formazione</Text>
+        <Text>FORMAZIONE</Text>
       </Container>
       {/* 🟣 Overlay / dettaglio partita */}
       {detailOverlay.show && (
@@ -85,14 +84,7 @@ const MatchCard : FC<MatchCardProps> = ( {match, uid, user, openModal}) => {
         </OverlayBackdrop>
       )}
       <Accordion title="Dettagli partita">
-        <MatchActions
-          match={match}
-          user={user}
-          //handleModalAddGuest={handleModalAddGuest}
-          //handleModalRemoveGuest={handleModalRemoveGuest}
-          //handleDeleteMatch={handleDeleteMatch}
-          openModal={openModal}
-        />
+        <MatchActions match={match}/>
       </Accordion>
     </Container>
   )

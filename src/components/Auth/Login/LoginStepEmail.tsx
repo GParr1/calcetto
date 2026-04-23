@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useResponsiveStyle } from 'styles/styles.utils';
-import Button, { ButtonProps, ButtonType } from 'components/core/Button';
+import Button from 'components/core/Button/Button';
 import { btnSecondaryDefault, ContainerProps, textDefault } from 'styles';
 import HeaderAuthView from 'components/Auth/Common/HeaderAuthView';
 import SocialLogin from 'components/Auth/Common/SocialLogin';
@@ -13,6 +13,9 @@ import { LoginLabelsProps } from 'properties/authView'
 import { DoFirebaseLoginParms } from 'utils/authUtils'
 import { Container } from 'components/core/Container/Container'
 import { FlexAlignItems, SizesPx, SizesRem, SizeUnits } from 'components/core/Container/enum'
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps } from 'components/core/Button/types'
+import { FORM_EMAIL_STEP, FromType } from 'structure/formUser'
 
 interface LoginStepEmailProps {
   handleLogin: (obj: DoFirebaseLoginParms) => Promise<void>
@@ -55,22 +58,22 @@ const LoginStepEmail: React.FC<LoginStepEmailProps> = ({ handleLogin, handleSetE
   return (
     <>
       {/* 🧭 Header */}
-      <Container role={'region'} { ...responsiveFormContainer }>
-        <HeaderAuthView {...headerAuthViewProps}/>
+      <Container role={'region'} {...responsiveFormContainer}>
+        <HeaderAuthView {...headerAuthViewProps} />
         <SocialLogin handleLogin={handleLogin} />
       </Container>
       <DividerLogin />
-      <Container role={'region'} { ...responsiveFormContainer }>
+      <Container role={'region'} {...responsiveFormContainer}>
         <GeneralForm
-          formId="email-step"
+          formData={FromType.emailStep}
           handleSubmit={handleSetEmail}
           labels={{ submitLabel: 'AVANTI' }}
           obj={{}}
         />
       </Container>
-      <Container role={'region'} { ...responsiveActionContainer }>
-        <Button {...btnCreateAccountConfig}/>
-        <Link {...linkConfig}/>
+      <Container role={'region'} {...responsiveActionContainer}>
+        <Button {...btnCreateAccountConfig} />
+        <Link {...linkConfig} />
       </Container>
     </>
   )

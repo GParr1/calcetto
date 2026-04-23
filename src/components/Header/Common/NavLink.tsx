@@ -1,10 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import LogoutBtn from 'components/Header/Common/LogoutBtn'
-import { StyleProp, View } from 'react-native';
-import { useResponsiveStyle } from 'styles/styles.utils';
-import { btnNavLinkDefault, btnPrimaryDefault, ContainerProps, textDefault } from 'styles';
-import Button, { ButtonType } from 'components/core/Button';
+import { StyleProp } from 'react-native';
+import { btnNavLinkDefault } from 'styles';
+import Button from 'components/core/Button/Button';
 import { Container } from 'components/core/Container/Container'
 import {
   DisplayContainer,
@@ -12,10 +10,10 @@ import {
   FlexDirection,
   FlexJustifyContent,
   SizesPx,
-  SizeUnits
 } from 'components/core/Container/enum'
 import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 import NavAction from 'components/Header/Common/NavAction'
+import { ButtonType } from 'components/core/Button/enum'
 
 interface NavLinkProps {
   isMobile?: boolean

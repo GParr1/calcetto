@@ -5,8 +5,11 @@ import GeneralForm from 'components/Form/GeneralForm';
 import Link from 'components/core/Link';
 import { useResponsiveStyle } from 'styles/styles.utils';
 import { btnDefault, TextAlign, textDefault } from 'styles';
-import Button, { ButtonProps, ButtonType, IoniconsNames } from 'components/core/Button';
+import Button from 'components/core/Button/Button';
 import { FormObject } from 'types/form';
+import { ButtonType } from 'components/core/Button/enum'
+import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
+import { FORM_REGISTER_STEP_2, FromType } from 'structure/formUser'
 
 interface RegisterStepEmailPasswordProps {
   handleBack: () =>  void
@@ -56,17 +59,17 @@ const RegisterStepEmailPassword: React.FC<RegisterStepEmailPasswordProps> = ({ h
 
 
 
-  return(
+  return (
     <>
       <Button {...btnBackConfig} />
-      <HeaderAuthView {...headerAuthViewProps}/>
-      <View style={{width: '100%',alignItems: 'center', padding: 16,}}>
+      <HeaderAuthView {...headerAuthViewProps} />
+      <View style={{ width: '100%', alignItems: 'center', padding: 16 }}>
         <GeneralForm
-          formId="register-step-2"
+          formData={FromType.registerStep2}
           handleSubmit={handleRegister}
           obj={formObjectStep1}
         />
-        <Text {...testConfigProps}/>
+        <Text {...testConfigProps} />
       </View>
     </>
   )

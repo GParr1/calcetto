@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { deleteErrorAndMergeState, deleteErrorAndSetState } from 'state/stateUtils'
-import {User} from 'src/types'
+import {User} from 'types/user'
 interface AuthState {
   user: User | null
   accountInfo: any | null

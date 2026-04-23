@@ -1,67 +1,75 @@
-import React, { FormEvent, useState } from 'react';
-import { getFormStructure } from 'utils/utils';
-import { StyleSheet, View } from 'react-native';
-import { FieldsFormStructure, FormStructure, GeneralFormProps } from './types';
-import Input from 'components/core/CustomInput';
-import Button, { ButtonType } from 'components/core/Button';
-import { ContainerProps } from 'styles';
-import { validateForm } from 'components/Form/utils';
-import { useResponsiveStyle } from 'styles/styles.utils';
-import DateField from 'components/core/DateFiled';
+import React, { FC, useState } from 'react'
+import { FieldsFormStructure, GeneralFormProps } from './types'
+import { Input } from 'components/core/Inputs/CustomInput'
+import Button from 'components/core/Button/Button'
+import { validateForm } from 'components/Form/utils'
+import { DateField } from 'components/core/Inputs/DateField'
+import { Container } from 'components/core/Container/Container'
+import {
+  FlexAlignItems,
+  FlexJustifyContent,
+  SizesPx,
+} from 'components/core/Container/enum'
+import { ButtonType } from 'components/core/Button/enum'
+import { SelectInput } from 'components/core/Inputs/SelectInput'
 
 /**
  * 🔹 GeneralForm
  * Generatore dinamico di form sulla base della struttura
  * definita in `getFormStructure(formId)`.
  */
-const GeneralForm: React.FC<GeneralFormProps> = ({
-                                                   handleSubmit,
-                                                   handleChangeInput,
-                                                   formId,
-                                                   obj = {},
-                                                   labels
-                                                 }) => {
-  const { getResponsiveStyle } = useResponsiveStyle();
-  const formData: FormStructure = getFormStructure(formId);
+const GeneralForm: FC<GeneralFormProps> = ({
+  handleSubmit,
+  handleChangeInput,
+  formData,
+  obj = {},
+}) => {
+  const { id, fields, submitLabel } = formData
 
   const [formValues, setFormValues] = useState(
     formData.fields.reduce((acc: any, field: FieldsFormStructure) => {
-      if (field.type === 'date-split') {
-        acc[`${field.name}_day`] = field.defaultValue ? field.defaultValue.split('-')[2] : '';
-        acc[`${field.name}_month`] = field.defaultValue ? field.defaultValue.split('-')[1] : '';
-        acc[`${field.name}_year`] = field.defaultValue ? field.defaultValue.split('-')[0] : '';
-      } else {
-        acc[field.name] = obj[field.name] ?? field.defaultValue ?? '';
-      }
-      return acc;
+        acc[field.name] = obj[field.name] ?? field.defaultValue ?? ''
+      return acc
     }, {})
-  );
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  )
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   const onFormSubmit = () => {
-    let { formValid, formErrors } = validateForm(formData,formValues)
+    let { formValid, formErrors } = validateForm(formData, formValues)
     if (!formValid) {
-      setErrors(formErrors); // Aggiorna lo stato con gli errori
-      return;
+      setErrors(formErrors) // Aggiorna lo stato con gli errori
+      return
     }
-    handleSubmit?.({...obj,...formValues}); // Passa i dati del form validato
-  };
+    handleSubmit?.({ ...obj, ...formValues }) // Passa i dati del form validato
+  }
 
-  const handleChange = (name: string, value: string) => {
+  const handleChange = (name: string, value: string | number) => {
     setFormValues((prevValues: any) => ({
       ...prevValues,
-      [name]: value,
-    }));
-    handleChangeInput?.({ [name]: value, })
-  };
-  const viewFormConfig =getResponsiveStyle({
-    width: ['80%','80%','80%']
-  })
+      [name]: value
+    }))
+    handleChangeInput?.({ [name]: value })
+  }
+  const viewFormConfig = {
+    flexGap: SizesPx.S
+  }
+
+  const btnConfig = {
+    touchableOpacityConfig: {
+      type: ButtonType.PRIMARY,
+      onPress: onFormSubmit,
+      accessibilityLabel: 'Submit'
+    },
+    label: submitLabel ?? 'Submit'
+  }
+  const containerBtn = {
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER
+  }
   return (
-    <View role={'form'} id={formId} style={{...viewFormConfig}}>
-      {formData.fields.map((field :any) => {
+    <Container role={'form'} id={id} {...viewFormConfig}>
+      {fields.map((field: any) => {
         const {
-          touchableOpacityConfig,
           label,
           type,
           name,
@@ -70,7 +78,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
           options = [],
           required,
           pattern
-        } = field;
+        } = field
 
         switch (type) {
           case 'text':
@@ -78,8 +86,7 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
           case 'number':
           case 'datetime-local':
           case 'password':
-          case 'select':
-            const inputConfig ={
+            const inputConfig = {
               type,
               label,
               name,
@@ -89,153 +96,47 @@ const GeneralForm: React.FC<GeneralFormProps> = ({
               defaultValue,
               pattern,
               value: formValues[name],
-              onChangeText:(value: string) => handleChange(name, value)
-            }
-            const viewConfig = {
-              key:name
+              errorText: errors[name],
+              onChangeText: (value: string) => handleChange(name, value)
             }
             return (
-              <View {...viewConfig}>
-                <Input {...inputConfig}/>
-              </View>
-            );
-
-          /** =====================
-           *  Caso date-split (GG/MM/AAAA)
-           *  ===================== */
-          case 'date-split': {
-            const days = Array.from({ length: 31 }, (_, i) => i + 1);
-            const months = [
-              { code: '01', label: 'Gennaio' },
-              { code: '02', label: 'Febbraio' },
-              { code: '03', label: 'Marzo' },
-              { code: '04', label: 'Aprile' },
-              { code: '05', label: 'Maggio' },
-              { code: '06', label: 'Giugno' },
-              { code: '07', label: 'Luglio' },
-              { code: '08', label: 'Agosto' },
-              { code: '09', label: 'Settembre' },
-              { code: '10', label: 'Ottobre' },
-              { code: '11', label: 'Novembre' },
-              { code: '12', label: 'Dicembre' }
-            ];
-
-            const currentYear = new Date().getFullYear();
-            const startYear = 1900;
-            const years = Array.from(
-              { length: currentYear - startYear + 1 },
-              (_, i) => startYear + i
-            );
-
-            const [defaultYear, defaultMonth, defaultDay] = defaultValue
-              ? defaultValue.split('-')
-              : ['', '', ''];
-            const viewSplitDate = {
-              gap: 2
-            }
+              <Container key={name}>
+                <Input {...inputConfig} />
+              </Container>
+            )
+          case 'select':
             return (
-              <View key={name} >
-                {label && (
-                  <label htmlFor={name} className="form-label me-2">
-                    {label}
-                  </label>
-                )}
-                <View style={{...viewSplitDate}}>
-                  <Input
-                    label="Giorno"
-                    type="select"
-                    name={`${name}_day`}
-                    required={required}
-                    options={days.map((day) => ({
-                      label: String(day).padStart(2, '0'),
-                      value: String(day).padStart(2, '0')
-                    }))}
-                    placeholder={'Giorno'}
-                    value={formValues[`${name}_day`] || defaultDay}  // Assicurati di passare il valore corretto
-                    onChangeText={(value: string) => handleChange(`${name}_day`, value)}
-                  />
+              <SelectInput
+                value={formValues[name]}
+                items={options}
+                label={label}
+                onValueChange={(v: number) => handleChange(name, v)}
+              />
+            )
 
-                  <Input
-                    label="Mese"
-                    type="select"
-                    name={`${name}_month`}
-                    required={required}
-                    options={months.map((month) => ({
-                      label: month.label,
-                      value: month.code
-                    }))}
-                    placeholder={'Mese'}
-                    value={formValues[`${name}_month`] || defaultMonth}  // Lo stesso per mese
-                    onChangeText={(value: string) => handleChange(`${name}_month`, value)}
-                  />
-
-                  <Input
-                    label="Anno"
-                    type="select"
-                    name={`${name}_year`}
-                    required={required}
-                    options={years.map((year) => ({
-                      label: String(year),
-                      value: String(year)
-                    }))}
-                    placeholder={'Anno'}
-                    value={formValues[`${name}_year`] || defaultYear}  // Lo stesso per anno
-                    onChangeText={(value: string) => handleChange(`${name}_year`, value)}
-                  />
-
-                </View>
-              </View>
-            );
-          }
           case 'date':
             return (
               <DateField
                 key={name}
                 label={label}
                 required={required}
+                errorText={errors[name]}
                 value={formValues[name]}
-                onChange={(date: string) =>
-                  handleChange(name, date)
-                }
+                onChange={(date: string) => handleChange(name, date)}
               />
-            );
+            )
 
           case 'button':
-            const btnConfig = {
-              touchableOpacityConfig: {
-                ...touchableOpacityConfig,
-                onPress: onFormSubmit,
-                accessibilityLabel: "Submit",
-              },
-              label: labels?.submitLabel ?? 'Submit',
-            }
-            const containerBtn = getResponsiveStyle({
-              justifyContent: [ContainerProps.justifyCenter],
-              alignItems: [ContainerProps.alignCenter]
-            })
-            return (
-              <View style={{...containerBtn}}>
-                <Button {...btnConfig}/>
-              </View>
-            )
+
           default:
-            return null;
+            return null
         }
       })}
-    </View>
-  );
-};
+      <Container {...containerBtn}>
+        <Button {...btnConfig} />
+      </Container>
+    </Container>
+  )
+}
 
-const styles = StyleSheet.create({
-  inputContainer: {
-    marginBottom: 16
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-  },
-});
-export default GeneralForm;
+export default GeneralForm

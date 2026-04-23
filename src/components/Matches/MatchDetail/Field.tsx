@@ -4,7 +4,6 @@ import { DimensionValue } from 'react-native'
 import CardBronze from 'components/FifaCard/CardBronze'
 import { FieldProps } from 'components/Matches/MatchDetail/types'
 
-
 const Field: FC<FieldProps> = ({ player, pos }) => (
   <Container
     key={player.id}

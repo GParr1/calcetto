@@ -35,12 +35,7 @@ const C: React.FC<ContainerProps> = (props) => {
     onPress,
     ...rest
   } = props
-  if (display) {
-    console.log(
-      'ì',
-      mapResponsiveValues(display, (v) => ({ display: v }))
-    )
-  }
+
   const computedStyle = [
     display && { display: useResponsiveValue(display) },
     width && { width: useResponsiveValue(width) },

@@ -17,10 +17,11 @@ import {
   SizesRem,
   SizeUnits
 } from 'components/core/Container/enum'
-import Button, { ButtonType, IoniconsNames } from 'components/core/Button'
-import { doSignOut } from 'utils/authUtils'
+import Button from 'components/core/Button/Button'
 import { COLORS } from 'components/constantStyle'
 import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
+import { ButtonType } from 'components/core/Button/enum'
+import { IoniconsNames } from 'components/core/Button/types'
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)

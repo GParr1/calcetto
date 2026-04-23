@@ -2,13 +2,16 @@ import React from 'react'
 import GeneralForm from 'components/Form/GeneralForm'
 import { Modal } from 'react-native'
 import { Container } from 'components/core/Container/Container'
-import { COLORS, SizesPx, SizeUnits } from 'components/core/Container/enum'
-
-interface ModalInfo {
-  modalTitle: string
-  mode: string
-  handleSubmit: (obj: Record<string, any>) => void
-}
+import {
+  COLORS,
+  FlexAlignItems,
+  FlexJustifyContent,
+  SizesPx, SizeUnits,
+} from 'components/core/Container/enum'
+import TitleModal from 'components/Modal/TitleModal'
+import { FromType } from 'structure/formUser'
+import { FormId } from 'components/Form/types'
+import { ModalInfo } from 'types/molal'
 
 interface ModalFormProps {
   modalInfo: ModalInfo
@@ -21,60 +24,47 @@ const ModalForm: React.FC<ModalFormProps> = ({
   objSubmit = {},
   closeModal
 }) => {
+  const { modalTitle, mode, handleSubmit } = modalInfo
   const modalConf = {
     visible: true,
     transparent: true,
-    presentationStyle: 'pageSheet',
-    animationType: 'fade'
-    //onRequestClose: closeOverlay
+    onRequestClose: closeModal
   }
   const contentConf = {
     padding: SizesPx.XL,
-    backgroundColor: COLORS.SECONDARY_BG
+    flexJustifyContent: FlexJustifyContent.CENTER,
+    flexAlignItems: FlexAlignItems.CENTER,
+  }
+  if(!mode){
+    return null
   }
   return (
     <>
-      <Modal {...modalConf}>
+      <Modal
+        {...modalConf}
+        animationType={'fade'}
+        presentationStyle={'pageSheet'}
+      >
         <Container {...contentConf}>
-        <GeneralForm
-          formId={modalInfo.mode}
-          handleSubmit={modalInfo.handleSubmit}
-          obj={objSubmit}
-        />
+          <Container
+            style={{
+              padding: 20,
+              borderRadius: 12,
+              backgroundColor: COLORS.SECONDARY_BG,
+              gap: 8,
+              minWidth: "50%",
+              boxShadow: `0px 0px 8px ${COLORS.PRIMARY_COLOR}`
+            }}
+          >
+            {modalTitle && <TitleModal modalTitle={modalTitle} closeModal={closeModal} />}
+            <GeneralForm
+              formData={FromType[mode]}
+              handleSubmit={handleSubmit}
+              obj={objSubmit}
+            />
+          </Container>
         </Container>
       </Modal>
-      {
-        // <div className="modal show d-block p-4" tabIndex={-1} role="dialog">
-        //   <div
-        //     className="modal-dialog modal-dialog-centered modal-xl"
-        //     role="document"
-        //   >
-        //     <div className="modal-content">
-        //       <div className="modal-header d-flex justify-content-center">
-        //         <h5 className="modal-title m-0">{modalInfo.modalTitle}</h5>
-        //         <button
-        //           type="button"
-        //           className="btn-close btn-close-white position-absolute end-0 me-3"
-        //           onClick={closeModal}
-        //           aria-label="Close"
-        //         ></button>
-        //       </div>
-        //       <div className="modal-body m-4">
-        //         <div className="row justify-content-center">
-        //           <div className="col-12 col-lg-8">
-        //             <GeneralForm
-        //               formId={modalInfo.mode}
-        //               handleSubmit={modalInfo.handleSubmit}
-        //               obj={objSubmit}
-        //             />
-        //           </div>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   </div>
-        // </div>
-      }
-      <div className="modal-backdrop fade show"></div>
     </>
   )
 }
