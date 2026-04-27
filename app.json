@@ -4,7 +4,7 @@
       "bundler": "metro"
     },
     "experiments": {
-      "baseUrl": "/mini-liga"
+      "baseUrl": "/"
     },
     "plugins": ["expo-camera"]
   }

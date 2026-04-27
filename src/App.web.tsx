@@ -121,7 +121,7 @@ const App: FC = () => {
     element:<Navigate to={user ? '/dashboard' : '/welcome'} />
   }
   return (
-    <Router basename="/mini-liga">
+    <Router basename="/">
       <Routes>
         <Route {...catchNavigateConfig}/>
         <Route {...emptyNavigateConfig}/>
