@@ -27,6 +27,15 @@ jobs:
       - name: Build Expo Web
         run: npm run build:expo-web
 
+      - name: Rename dist folder (if needed)
+        run: |
+          if [ -d "dist" ]; then
+            echo "dist folder found"
+          elif [ -d "web-build" ]; then
+            mv web-build dist
+            echo "Renamed web-build to dist"
+          fi
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
