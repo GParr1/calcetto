@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
-import App from './App';
+import App from '../App';
 import { Animated, Easing, Text, View } from 'react-native';
 import { ContainerProps } from 'styles';
 import reportWebVitals from 'reportWebVitals';

@@ -2,8 +2,7 @@
   "expo": {
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "basePath": "/calcetto/"
+      "output": "static"
     },
     "plugins": ["expo-camera"]
   }
