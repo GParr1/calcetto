@@ -13,7 +13,7 @@
     "start:ios": "cross-env REACT_APP_PLATFORM=ios expo start --ios",
     "android": "cross-env REACT_APP_PLATFORM=android expo run:android",
     "ios": "cross-env REACT_APP_PLATFORM=ios expo run:ios",
-    "build:expo-web": "expo export:web",
+    "build:expo-web": "rm dist && expo export:web",
     "lint": "eslint src --fix",
     "format": "prettier --config .prettierrc.json --write \"{src,test}/**/*.{js,ts,tsx}\"",
     "fix": "npm run format && npm run lint",
