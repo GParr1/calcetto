@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "src/index.js",
-  "homepage": "https://GParr1.github.io/app1",
+  "homepage": "https://GParr1.github.io",
   "scripts": {
     "clean:node_modules": "npx rimraf node_modules package-lock.json && npm install",
     "start:expo": "expo start",
@@ -13,7 +13,7 @@
     "start:ios": "cross-env REACT_APP_PLATFORM=ios expo start --ios",
     "android": "cross-env REACT_APP_PLATFORM=android expo run:android",
     "ios": "cross-env REACT_APP_PLATFORM=ios expo run:ios",
-    "build:expo-web":"expo export:web",
+    "build:expo-web":"npx expo export --platform web",
     "lint": "eslint src --fix",
     "format": "prettier --config .prettierrc.json --write \"{src,test}/**/*.{js,ts,tsx}\"",
     "fix": "npm run format && npm run lint",
