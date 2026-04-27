@@ -1,28 +1,64 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:import/recommended",
-    "plugin:react-hooks/recommended",
+    "plugin:import/typescript",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "jsx-a11y", "import", "react-hooks", "prettier"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "import",
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
   },
   "rules": {
-    "prettier/prettier": "error",
+    /* ✅ Code style + TS */
+    "prettier/prettier": ["error"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+
+    /* ✅ React / JSX */
+    "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/jsx-uses-react": "off",
+    "react/jsx-filename-extension": [
+      "warn",
+      { "extensions": [".jsx", ".tsx"] }
+    ],
+
+    /* ✅ Import management */
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
+      }
+    ],
+
+    /* ✅ Accessibility (solo per Web) */
+    "jsx-a11y/no-static-element-interactions": "off"
   },
   "settings": {
     "react": {
@@ -31,14 +67,19 @@
     "import/resolver": {
       "alias": {
         "map": [
+          ["src", "./src"],
           ["state", "./src/state"],
           ["properties", "./src/properties"],
           ["components", "./src/components"],
-          ["utils", "./src/utils"]
-          // Aggiungi altri alias se necessario
+          ["utils", "./src/utils"],
+          ["types", "./src/types"]
         ],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
-  }
+  },
+  "ignorePatterns": ["build/", "dist/", "node_modules/", "coverage/"]
 }

@@ -12,7 +12,7 @@ export const SVGPlus = () => (
       d="M11 5a1 1 0 0 1 1 1v4h4a1 1 0 1 1 0 2h-4v4a1 1 0 1 1-2 0v-4H6a1 1 0 1 1 0-2h4V6a1 1 0 0 1 1-1z"
     ></path>
   </svg>
-);
+)
 
 export const SVGPlusCircle = () => (
   <svg
@@ -29,7 +29,7 @@ export const SVGPlusCircle = () => (
       <rect x="12" y="22" width="24" height="4" rx="1" />
     </g>
   </svg>
-);
+)
 export const SVGPlusCircleFilled = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -45,4 +45,4 @@ export const SVGPlusCircleFilled = () => (
       <rect x="12" y="22" width="24" height="4" rx="1" />
     </g>
   </svg>
-);
+)

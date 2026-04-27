@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "web": {
+      "bundler": "metro"
+    },
+    "experiments": {
+      "baseUrl": "/mini-liga"
+    },
+    "plugins": ["expo-camera"]
+  }
+}

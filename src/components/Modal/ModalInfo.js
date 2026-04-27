@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const ModalInfo = ({ title, message, type = 'info', closeModal }) => {
   const getModalStyle = () => {
@@ -8,25 +8,30 @@ const ModalInfo = ({ title, message, type = 'info', closeModal }) => {
         return {
           bg: 'bg-success bg-opacity-25',
           text: 'text-success',
-          icon: 'bi-check2',
-        };
+          icon: 'bi-check2'
+        }
       case 'error':
         return {
           bg: 'bg-danger bg-opacity-25',
           text: 'text-danger',
-          icon: 'bi-x-lg',
-        };
+          icon: 'bi-x-lg'
+        }
       default:
         return {
           bg: 'bg-primary bg-opacity-25',
           text: 'text-primary',
-          icon: 'bi-info-circle',
-        };
+          icon: 'bi-info-circle'
+        }
     }
-  };
-  const { bg, text, icon } = getModalStyle();
+  }
+  const { bg, text, icon } = getModalStyle()
   return (
-    <div className="modal show d-block" tabIndex="-1" role="dialog" data-testid="modal-open">
+    <div
+      className="modal show d-block"
+      tabIndex="-1"
+      role="dialog"
+      data-testid="modal-open"
+    >
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -53,12 +58,12 @@ const ModalInfo = ({ title, message, type = 'info', closeModal }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 ModalInfo.propTypes = {
   title: PropTypes.string,
   message: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['success', 'error', 'info']),
-  closeModal: PropTypes.func.isRequired,
-};
-export default ModalInfo;
+  closeModal: PropTypes.func.isRequired
+}
+export default ModalInfo
