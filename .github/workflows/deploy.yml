@@ -1,26 +1,34 @@
-name: Deploy
+name: Deploy Expo App to GitHub Pages
 
-actions:
-  build:
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
     runs-on: ubuntu-latest
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v2
 
-  - name: Install dependencies
-    run: npm install
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Lint code
-    run: npm run lint
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  - name: Run tests
-    run: npm test
+      - name: Install dependencies
+        run: npm install
 
-  - name: Build project
-    run: npm run build
+      - name: Build Expo Web
+        run: npm run build:expo-web
 
-  - name: Deploy to server
-    run: npm run deploy
-
-  - name: Export for web
-    run: npm run build:expo-web
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
