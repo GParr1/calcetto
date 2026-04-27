@@ -3,7 +3,7 @@ import { StyleProp, TextStyle } from 'react-native'
 import { ContainerProps } from 'components/core/Container/types'
 
 export interface TableRowProps {
-  label: string
+  label?: string
   value?: React.ReactNode
   containerStyle?: ContainerProps
   labelStyle?: StyleProp<TextStyle>

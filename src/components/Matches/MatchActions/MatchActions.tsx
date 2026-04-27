@@ -36,17 +36,9 @@ const MatchActions: FC<MatchActionsProps> = ({ match }) => {
     isPast,
     playerExists,
   }
-  const userActionConfig = {
-    match,
-    isPast,
-    playerExists: !!playerExists,
-    userAuth
-  }
 
   return (
     <Container {...mainContainerConfig}>
-      {/* Pulsanti iscrizione */}
-      <UserAction {...userActionConfig} />
       {/*Admin Controls*/}
       {
         /*{customerInfo?.isAdmin  &&*/

@@ -9,6 +9,7 @@ import { Container } from 'components/core/Container/Container'
 import {
   FlexAlignItems,
   FlexDirection,
+  FlexJustifyContent,
   SizesPx
 } from 'components/core/Container/enum'
 import MatchSlider from 'components/Matches/MatchSlider'
@@ -74,12 +75,23 @@ const MatchesView: React.FC<MatchesViewProps> = ({ user }) => {
     shadowOpacity: 0.4,
     shadowRadius: 15
   }
+  const HeaderSectionConfig = {
+    flexDirection: useResponsiveValue({
+      mobile: FlexDirection.COLUMN,
+      tablet: FlexDirection.ROW,
+      desktop: FlexDirection.ROW
+    }),
+    flexGap: SizesPx.XL,
+    flexJustifyContent:FlexJustifyContent.CENTER
+  }
   return (
     <Container {...responsiveMainContainer}>
       <Container role={'region'} flexGap={SizesPx.M}>
-        <Text {...sectionTitleConfig} />
-        <Container {...wrapperConfig}>
+        <Container {...HeaderSectionConfig}>
+          <Text {...sectionTitleConfig} />
           <MatchCreate />
+        </Container>
+        <Container {...wrapperConfig}>
           {matches.length > 0 && <MatchSlider {...matchListConfig} />}
           {matches.length == 0 && (
             <Text {...sectionTitleConfig}>Non ci sono partite disponibili</Text>

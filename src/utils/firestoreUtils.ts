@@ -119,3 +119,13 @@ export const getMatchesByPlayerId = (matches: Match[], playerId: string) => {
     match.players?.some((p) => p.id === playerId)
   )
 }
+
+export const getDocSnapUserId = async (uid: string) => {
+  return await getDoc(getDocUserId(uid))
+}
+export const getDocMatchId = (matchId: string) => {
+  return doc(db, 'matches', matchId)
+}
+export const getDocUserId = (uid: string) => {
+  return doc(db, 'users', uid)
+}

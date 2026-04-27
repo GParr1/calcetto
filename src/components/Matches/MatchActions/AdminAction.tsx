@@ -1,16 +1,15 @@
 import React, { FC, useState } from 'react'
-import { COLORS, FlexDirection, SizesPx } from 'components/core/Container/enum'
+import {
+  COLORS,
+  FlexDirection,
+  FlexJustifyContent,
+  SizesPx
+} from 'components/core/Container/enum'
 import { Container } from 'components/core/Container/Container'
 import Button from 'components/core/Button/Button'
 import { Text, TextInput } from 'react-native'
 import { btnSecondaryDefault, UITextProps } from 'styles'
-import {
-  checkMaxPlayersMatch,
-  handleCreateMatchUtils,
-  handleDeleteMatchUtils,
-  handleJoinGuestMatch,
-  handleSaveResult
-} from 'utils/matchUtils'
+import { checkMaxPlayersMatch, handleDeleteMatchUtils, handleJoinGuestMatch, handleSaveResult } from 'utils/matchUtils'
 import { AdminActionProps } from './types'
 import { ButtonType } from 'components/core/Button/enum'
 import { ButtonProps, IoniconsNames } from 'components/core/Button/types'
@@ -20,12 +19,17 @@ import { Match } from 'types/match'
 import PlayerModal from 'components/Modal/PlayerModal'
 import ModalForm from 'components/Modal/ModalForm'
 import { openModal } from 'components/Matches/utils'
-import {  Player } from 'types/player'
+import { Player } from 'types/player'
 import { ModalInfo } from 'types/molal'
+import { useResponsiveValue } from 'components/core/utils'
+import OverlayBackdrop from 'components/Modal/OverlayBackdrop'
+import { TableRow } from 'components/core/Table/TableRow'
+import { Table } from 'components/core/Table/Table'
 
 const AdminAction: FC<AdminActionProps> = (props) => {
   const matches = useSelector(getMatches) as Match[] // 👈 forza il tipo
   const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [modalResultVisible, setModalResultVisible] = useState<boolean>(false)
   const [modalInfo, setModalInfo] = useState<ModalInfo>({
     show: false,
     mode: null,
@@ -34,15 +38,25 @@ const AdminAction: FC<AdminActionProps> = (props) => {
     handleSubmit: null
   })
   const { match, isPast, playerExists } = props
-  const {players} = match
+  const { players } = match
 
-  const [goalsA, setGoalsA] = useState<string>('')
-  const [goalsB, setGoalsB] = useState<string>('')
+  const [goalsA, setGoalsA] = useState<Record<string, number>>({})
+  const [goalsB, setGoalsB] = useState<Record<string, number>>({})
   const isMaxPlayers = checkMaxPlayersMatch(match)
 
   const handleSubmitResult = async () => {
-    if (goalsA === '' || goalsB === '') return alert('Inserisci entrambi i gol')
-    const result = { goalsA: Number(goalsA), goalsB: Number(goalsB) }
+    if (!goalsA?.goal || !goalsB?.goal) {
+      return alert('Inserisci entrambi i gol')
+    }
+    const { goal: goalA, ...restA } = goalsA
+    const { goal: goalB, ...restB } = goalsB
+    const result = {
+      goalsA: Number(goalA),
+      goalsB: Number(goalB),
+      ...restA,
+      ...restB,
+      status: 'closed'
+    }
     await handleSaveResult(match, result)
   }
 
@@ -65,7 +79,6 @@ const AdminAction: FC<AdminActionProps> = (props) => {
       handleSubmit: null
     })
   }
-
 
   const btnAddGuestMatchConfig = {
     touchableOpacityConfig: {
@@ -114,8 +127,8 @@ const AdminAction: FC<AdminActionProps> = (props) => {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
       onPress: async () => {
-        console.log("pippo")
-        await handleDeleteMatchUtils(matches,match.id)
+        console.log('pippo')
+        await handleDeleteMatchUtils(matches, match.id)
       },
       accessibilityLabel: 'Remove Match',
       style: {
@@ -137,8 +150,7 @@ const AdminAction: FC<AdminActionProps> = (props) => {
   const btnSaveResultConfig = {
     touchableOpacityConfig: {
       type: ButtonType.SECONDARY,
-      onPress: async () => handleSubmitResult,
-      disabled: !playerExists,
+      onPress: async () => await handleSubmitResult(),
       accessibilityLabel: 'Remove Match',
       style: {
         ...btnSecondaryDefault,
@@ -148,56 +160,46 @@ const AdminAction: FC<AdminActionProps> = (props) => {
         gap: 8
       }
     },
-    label: 'Salva'
+    label: 'Salva '
+  } as ButtonProps
+  const btnResultConfig = {
+    touchableOpacityConfig: {
+      type: ButtonType.SECONDARY,
+      onPress: () => setModalResultVisible(true),
+      accessibilityLabel: 'Remove Match',
+      style: {
+        ...btnSecondaryDefault,
+        width: 'auto',
+        textTransform: UITextProps.CAPITALIZE,
+        fontWeight: '400',
+        gap: 8
+      }
+    },
+    label: 'Inserisci il risultato '
   } as ButtonProps
   const containerConfig = {
-    flexDirection: FlexDirection.ROW,
+    flexDirection: useResponsiveValue({
+      mobile: FlexDirection.COLUMN,
+      tablet: FlexDirection.ROW,
+      desktop: FlexDirection.ROW
+    }),
+    flexJustifyContent:FlexJustifyContent.CENTER,
     flexGap: SizesPx.S
   }
+  const overlayConfig = {
+    visible: modalResultVisible,
+    closeOverlay: () => setModalResultVisible(false)
+  }
   return (
-    <Container>
+    <Container flexGap={SizesPx.L}>
       <Container {...containerConfig}>
         {isMaxPlayers && <Button {...btnAddGuestMatchConfig} />}
         <Button {...btnRemoveGuestMatchConfig} />
+      </Container>
+      <Container {...containerConfig}>
+        <Button {...btnResultConfig} />
         <Button {...btnRemoveMatchConfig} />
       </Container>
-      {isPast && (
-        <Container>
-          <Text
-            style={{ color: COLORS.PRIMARY_TEXT }}
-            children={'Inserisci Risultato'}
-          />
-          <Container {...containerConfig}>
-            <TextInput
-              keyboardType="numeric"
-              placeholder="Gol Squadra A"
-              value={goalsA}
-              onChangeText={setGoalsA}
-              style={{
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 8,
-                padding: 12,
-                fontSize: 16
-              }}
-            />
-            <TextInput
-              keyboardType="numeric"
-              placeholder="Gol Squadra A"
-              value={goalsB}
-              onChangeText={setGoalsB}
-              style={{
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 8,
-                padding: 12,
-                fontSize: 16
-              }}
-            />
-          </Container>
-          <Button {...btnSaveResultConfig} />
-        </Container>
-      )}
       {modalVisible && (
         <PlayerModal
           players={players ?? []}
@@ -214,6 +216,136 @@ const AdminAction: FC<AdminActionProps> = (props) => {
           closeModal={closeModal}
         />
       )}
+
+      <OverlayBackdrop {...overlayConfig}>
+        <Container>
+          <Container {...containerConfig}>
+            <Table containerStyle={{ flex: 1 }}>
+              <TableRow
+                key={'goalsA'}
+                label={'Gol Squadra A'}
+                containerStyle={{
+                  style: {
+                    borderBottomWidth: 1,
+                    borderColor: COLORS.PRIMARY_TEXT
+                  }
+                }}
+                value={[
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Gol Squadra A"
+                    value={goalsA.goal}
+                    onChangeText={(t) =>
+                      setGoalsA((prev) => ({
+                        ...prev,
+                        goal: t
+                      }))
+                    }
+                    style={{
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 8,
+                      padding: 12,
+                      fontSize: 16
+                    }}
+                  />
+                ]}
+              />
+              {match?.teamBalance?.teamA?.map((ta) => {
+                return (
+                  <>
+                    <TableRow
+                      key={ta.id}
+                      label={ta.name}
+                      value={[
+                        <TextInput
+                          keyboardType="numeric"
+                          placeholder={`Gol ${ta.name}  `}
+                          value={goalsA[ta.id]}
+                          onChangeText={(t) =>
+                            setGoalsA((prev) => ({
+                              ...prev,
+                              [ta.id]: t
+                            }))
+                          }
+                          style={{
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 8,
+                            padding: 12,
+                            fontSize: 16
+                          }}
+                        />
+                      ]}
+                    />
+                  </>
+                )
+              })}
+            </Table>
+            <Table containerStyle={{ flex: 1 }}>
+              <TableRow
+                key={'goalsB'}
+                label={'Gol Squadra B'}
+                containerStyle={{
+                  style: {
+                    borderBottomWidth: 1,
+                    borderColor: COLORS.PRIMARY_TEXT
+                  }
+                }}
+                value={[
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Gol Squadra B"
+                    value={goalsB.goal}
+                    onChangeText={(t) =>
+                      setGoalsB((prev) => ({
+                        ...prev,
+                        goal: t
+                      }))
+                    }
+                    style={{
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 8,
+                      padding: 12,
+                      fontSize: 16
+                    }}
+                  />
+                ]}
+              />
+              {match?.teamBalance?.teamB?.map((tb) => {
+                return (
+                  <TableRow
+                    key={tb.id}
+                    label={tb.name}
+                    value={
+                      <TextInput
+                        keyboardType="numeric"
+                        placeholder={`Gol ${tb.name}`}
+                        value={goalsB[tb.id]}
+                        onChangeText={(t) =>
+                          setGoalsB((prev) => ({
+                            ...prev,
+                            [tb.id]: t
+                          }))
+                        }
+                        style={{
+                          borderWidth: 1,
+                          borderColor: '#ccc',
+                          borderRadius: 8,
+                          padding: 12,
+                          fontSize: 16
+                        }}
+                      />
+                    }
+                  />
+                )
+              })}
+            </Table>
+          </Container>
+          <Button {...btnSaveResultConfig} />
+        </Container>
+      </OverlayBackdrop>
     </Container>
   )
 }

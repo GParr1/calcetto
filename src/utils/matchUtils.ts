@@ -35,7 +35,7 @@ export const handleSaveResult = async (match: Match, result: MatchResult) => {
     const { id } = match
     const updated = {
       ...match,
-      ...result
+      result
     }
     await updateMatch(id, updated)
     await getAllMatches()

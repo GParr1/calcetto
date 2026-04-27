@@ -28,22 +28,28 @@ const TR: React.FC<TableRowProps> = ({
   }
   return (
     <Container role={'row'} {...tableRowConfig}>
-      <Text
-        style={[{ fontWeight: '500', color: COLORS.primaryText }, labelStyle]}
-      >
-        {label}
-      </Text>
+      {label && (
+        <Text
+          style={[{ fontWeight: '500', color: COLORS.primaryText }, labelStyle]}
+        >
+          {label}
+        </Text>
+      )}
 
-      {value && (
+      {typeof value === 'string' || typeof value === 'number' ? (
         <Text
           style={[
-            { textAlign: 'right', color: COLORS.primaryText, fontWeight: 'bold' },
+            {
+              textAlign: 'right',
+              color: COLORS.primaryText,
+              fontWeight: 'bold'
+            },
             valueStyle
           ]}
         >
           {value}
         </Text>
-      )}
+      ) : value }
     </Container>
   )
 }
