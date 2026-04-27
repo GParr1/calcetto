@@ -121,7 +121,7 @@ const App: FC = () => {
     element:<Navigate to={user ? '/dashboard' : '/welcome'} />
   }
   return (
-    <Router basename="/">
+    <Router basename="/calcetto">
       <Routes>
         <Route {...catchNavigateConfig}/>
         <Route {...emptyNavigateConfig}/>
