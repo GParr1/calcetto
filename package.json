@@ -7,6 +7,7 @@
   "scripts": {
     "clean:node_modules": "npx rimraf node_modules package-lock.json && npm install",
     "start:expo": "expo start",
+    "build:web": "expo export --platform web",
     "start:web": "cross-env REACT_APP_PLATFORM=web expo start --web",
     "start:android": "cross-env REACT_APP_PLATFORM=android expo start --android",
     "start:ios": "cross-env REACT_APP_PLATFORM=ios expo start --ios",
