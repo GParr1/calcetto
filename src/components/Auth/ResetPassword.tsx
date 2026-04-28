@@ -3,12 +3,9 @@ import { doConfirmPasswordReset, doResetPassword, doVerifyPasswordResetCode } fr
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import GeneralForm from 'components/Form/GeneralForm'
 import { cleanUrlParamiter } from 'utils/utils'
-import ModalError from 'components/Modal/ModalInfo'
-import { View } from 'react-native'
-import { sizesPx } from 'styles'
 import { COLORS } from 'components/constantStyle'
 import { Container } from 'components/core/Container/Container'
-import ModalInfo from 'components/Modal/ModalInfo'
+import { ModalInfoComponent } from 'components/Modal/ModalInfo'
 import {
   FlexAlignItems,
   SizesPx,
@@ -71,7 +68,7 @@ const ResetPassword: React.FC = () => {
     padding: SizesPx.L
   }
   const modalProps = {
-    title: error ? 'Errore' : 'Password Reset',
+    modalTitle: error ? 'Errore' : 'Password Reset',
     type: error ? 'error' : 'success',
     message: error ? error : success,
     closeModal: () => (error ? setError('') : setSuccess(''))
@@ -94,7 +91,7 @@ const ResetPassword: React.FC = () => {
           obj={{}}
         />
       )}
-      {(error || success) && <ModalInfo {...modalProps} />}
+      {(error || success) && <ModalInfoComponent {...modalProps} />}
     </Container>
   )
 }

@@ -6,11 +6,10 @@ import {
   COLORS,
   FlexAlignItems,
   FlexJustifyContent,
-  SizesPx, SizeUnits,
+  SizesPx,
 } from 'components/core/Container/enum'
 import TitleModal from 'components/Modal/TitleModal'
 import { FromType } from 'structure/formUser'
-import { FormId } from 'components/Form/types'
 import { ModalInfo } from 'types/molal'
 
 interface ModalFormProps {
@@ -39,7 +38,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
     return null
   }
   return (
-    <>
+
       <Modal
         {...modalConf}
         animationType={'fade'}
@@ -65,7 +64,7 @@ const ModalForm: React.FC<ModalFormProps> = ({
           </Container>
         </Container>
       </Modal>
-    </>
+
   )
 }
 

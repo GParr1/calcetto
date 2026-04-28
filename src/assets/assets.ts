@@ -1,20 +1,18 @@
 export const Assets = {
-  logo: require('../../public/assets/logo.png'),
-  DEFAULT_PHOTO: require('../../public/assets/anonimous.png'),
-  BRONZE_CARD_BG: require('../../public/assets/RARE-BRONZE-FC24.png'),
-  SILVER_CARD_BG: require('../../public/assets/RARE-SILVER-FC24.png'),
-  GOLD_CARD_BG: require('../../public/assets/RARE-GOLD-FC24.png'),
-  CAMPO_CALCIO_BG: require('../../public/assets/campoDiCalcio.jpg'),
-};
+  logo: '/assets/logo.png',
+  DEFAULT_PHOTO: '/assets/anonimous.png',
+  BRONZE_CARD_BG: '/assets/RARE-BRONZE-FC24.png',
+  SILVER_CARD_BG: '/assets/RARE-SILVER-FC24.png',
+  GOLD_CARD_BG: '/assets/RARE-GOLD-FC24.png',
+  CAMPO_CALCIO_BG: '/assets/campoDiCalcio.jpg'
+}
+
 export const Teams = {
-  fiorentina: require('../../public/assets/teams/fiorentina.png'),
-  inter: require('../../public/assets/teams/inter.png'),
-  juventus: require('../../public/assets/teams/juventus.png'),
-  lazio: require('../../public/assets/teams/lazio.png'),
-  milan: require('../../public/assets/teams/milan.png'),
-  napoli: require('../../public/assets/teams/napoli.png'),
-  roma: require('../../public/assets/teams/roma.png'),
-};
-
-
-
+  fiorentina: '/assets/teams/fiorentina.png',
+  inter: '/assets/teams/inter.png',
+  juventus: '/assets/teams/juventus.png',
+  lazio: '/assets/teams/lazio.png',
+  milan: '/assets/teams/milan.png',
+  napoli: '/assets/teams/napoli.png',
+  roma: '/assets/teams/roma.png'
+}

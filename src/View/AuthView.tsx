@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
 import Login from 'components/Auth/Login/Login'
 import RegisterTwoSteps from 'components/Auth/Register/Register'
 import { useResponsiveStyle } from 'styles/styles.utils';
-import { ContainerProps } from 'styles';
-import ModalInfo from 'components/Modal/ModalInfo';
+import { ModalInfoComponent } from 'components/Modal/ModalInfo'
 import { Container } from 'components/core/Container/Container'
 import {
   FlexAlignItems,
@@ -34,7 +32,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ register = false }) => {
     width: '70vw'
   }
   const modalProps = {
-    title: error ? "Errore" : '',
+    modalTitle: error ? "Errore" : '',
     type: error ? 'error': 'success',
     message: error ? error : success,
     closeModal: () => error ? setError('') : setSuccess('')
@@ -42,14 +40,14 @@ export const AuthView: React.FC<AuthViewProps> = ({ register = false }) => {
 
   const registerTwoStepsProps = { setSuccess, setError}
   const loginProps = { setSuccess, setError}
-  return  (
-    <Container role={'region'} { ...responsiveMainContainer }>
-      {register ?
-        <RegisterTwoSteps {...registerTwoStepsProps}/> :
-        <Login {...loginProps} />}
-      {error || success && (
-        <ModalInfo {...modalProps} />
+  return (
+    <Container role={'region'} {...responsiveMainContainer}>
+      {register ? (
+        <RegisterTwoSteps {...registerTwoStepsProps} />
+      ) : (
+        <Login {...loginProps} />
       )}
+      {error || (success && <ModalInfoComponent {...modalProps} />)}
     </Container>
   )
 }
