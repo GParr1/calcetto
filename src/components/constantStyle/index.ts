@@ -1,5 +1,3 @@
-// src/constants/styles.ts
-
 // Definizione dei colori
 export const COLORS = {
   primaryBg: 'rgb(21, 22, 22)', // background principale

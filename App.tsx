@@ -1,6 +1,6 @@
 import React from 'react';
-import AppWeb from 'App.web';
-import AppNative from 'App.native';
+import AppWeb from './src/App.web';
+import AppNative from './src/App.native';
 import { Platform } from 'react-native';
 
 export default function App() {

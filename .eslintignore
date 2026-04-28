@@ -3,4 +3,3 @@ dist
 build
 coverage
 __tests__
-setupTests.js
